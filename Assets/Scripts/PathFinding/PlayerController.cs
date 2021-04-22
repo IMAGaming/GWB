@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 
+
 public class PlayerController : MonoBehaviour
 {
     // TODO:有限状态机
@@ -27,6 +28,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float indicatorHeight = 0.5f;
     private Camera cam;
     private Sequence movingSequence;
+
+    // A*寻路
+    private List<WayPoint> openList = new List<WayPoint>();
+    private List<WayPoint> closeList = new List<WayPoint>();
 
     private void Start()
     {
@@ -121,6 +126,18 @@ public class PlayerController : MonoBehaviour
         BuildPath();
     }
 
+    private void AstarPathFinding()
+    {
+        WayPoint start = currentWayPoint?.GetComponent<WayPoint>();
+        WayPoint end = targetWayPoint?.GetComponent<WayPoint>();
+
+        openList.Add(start);
+        while(openList.Count > 0)
+        {
+
+        }
+    }
+
     private void ExploreWayPoint(List<Transform> nextWayPoints, List<Transform> visitedWayPoints)
     {
         // 取下一个可达路径点 且根据目标路径点targetWayPoint选择优先级
@@ -128,7 +145,10 @@ public class PlayerController : MonoBehaviour
         nextWayPoints.Remove(current);
 
         if (current == targetWayPoint)
+        {
+            Debug.LogFormat("访问了{0}个结点", visitedWayPoints.Count);
             return;
+        }
 
         foreach(WayPath path in current.GetComponent<WayPoint>().neighbors)
         {
@@ -173,6 +193,7 @@ public class PlayerController : MonoBehaviour
                 return;
         }
 
+        Debug.LogFormat("找到路径含{0}个结点", finalPathPoints.Count);
         FollowPath();
     }
 
