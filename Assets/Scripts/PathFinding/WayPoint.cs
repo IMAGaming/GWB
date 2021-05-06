@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Diagnostics;
+using System;
 
 [ExecuteInEditMode]
 public class WayPoint : WayPointBehaviour
@@ -23,25 +24,33 @@ public class WayPoint : WayPointBehaviour
         if (neighbors == null)
             return;
 
-        foreach(WayPath path in neighbors)
+        foreach (WayPath path in neighbors)
         {
-            targetPos = path.target.position;
-            if(path.isActive)
+            if (path == null || path.target == null) continue;
+
+            targetPos = path.target.transform.position;
+            if (path.isActive)
             {
-                if (path.isClimbDown || path.isClimbUp)
-                    Gizmos.color = Color.yellow;
-                else if (path.isDropDown)
-                    Gizmos.color = Color.red;
-                else
-                    Gizmos.color = Color.green;
+                switch(path.pathType)
+                {
+                    case WayPath.PathType.ClimbUp:
+                    case WayPath.PathType.ClimbDown:
+                        Gizmos.color = Color.yellow;
+                        break;
+                    case WayPath.PathType.LadderUp:
+                    case WayPath.PathType.LadderDown:
+                        Gizmos.color = Color.blue;
+                        break;
+                    case WayPath.PathType.DropDown:
+                        Gizmos.color = Color.red;
+                        break;
+                    default:
+                        Gizmos.color = Color.green;
+                        break;
+                }
                 Gizmos.DrawLine(curPos, targetPos);
             }
         }
-    }
-
-    public void AddNeighbor(Transform wp, bool active = true)
-    {
-        neighbors.Add(new WayPath(wp, active));
     }
 
     public void AddNeighbor(WayPoint wp, bool active = true)
@@ -51,26 +60,30 @@ public class WayPoint : WayPointBehaviour
 }
 
 [System.Serializable]
-public class WayPath
+public class WayPath : IEquatable<WayPath> // 实现比较接口供Collection的Contains和Exists调用
 {
-    public Transform target;
+    public enum PathType { Normal, ClimbUp, ClimbDown, LadderUp, LadderDown, DropDown };
+
+    public WayPoint target;
     public bool isActive = true;
 
     [Space]
 
-    public bool isClimbUp = false;
-    public bool isClimbDown = false;
-    public bool isDropDown = false;
-
-    public WayPath(Transform _target, bool _active = true)
-    {
-        target = _target;
-        isActive = _active;
-    }
+    public PathType pathType = PathType.Normal;
 
     public WayPath(WayPoint _wp, bool _active = true)
     {
-        target = _wp.transform;
+        target = _wp;
         isActive = _active;
+    }
+
+    // 为路径更新时提供比较方法
+    public bool Equals(WayPath wp)
+    {
+        if (target.Equals(wp.target) && pathType.Equals(wp.pathType))
+        {
+            return true;
+        }
+        return false;
     }
 }
