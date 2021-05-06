@@ -3,38 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DG.Tweening;
+using Priority_Queue;
 
-
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoSingleton<PlayerController>
 {
-    // TODO:有限状态机
+    // TODO:有限状态机？
     public bool isMoving = false;
     public bool isClimbing = false;
 
     [Space]
 
-    public Transform currentWayPoint;
-    public Transform targetWayPoint;
-    public Transform indicator;
+    private Transform currentWayPoint;
+    private Transform targetWayPoint;
+    [SerializeField]private Transform indicator = default;
+
+    [Space]
+    // 存储寻路结果
+    [SerializeField] private List<WayPath> finalPath = new List<WayPath>();
 
     [Space]
 
-    private List<Transform> finalPathPoints = new List<Transform>();
-    public List<WayPath> finalPath = new List<WayPath>();
-
-    [Space]
     [SerializeField] private float moveSpeed = .2f;
     [SerializeField] private float checkRange = 1.0f;
     [SerializeField] private float indicatorHeight = 0.5f;
-    private Camera cam;
+
+    [Space]
+    // 各类动作的动画时间
+    // TODO：配置各类动作的动画时间
+    [SerializeField] private float climbTime = default;
+    [SerializeField] private float ladderTime = default;
+    [SerializeField] private float dropTime = default;
+
+    // 位移动画序列
     private Sequence movingSequence;
 
-    // A*寻路
-    private List<WayPoint> openList = new List<WayPoint>();
-    private List<WayPoint> closeList = new List<WayPoint>();
+    // 优先队列存储
+    private SimplePriorityQueue<WayPoint> openList = new SimplePriorityQueue<WayPoint>();
+    private SimplePriorityQueue<WayPoint> closeList = new SimplePriorityQueue<WayPoint>();
+
+    private Camera cam;
 
     private void Start()
     {
+        EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, StopMoving);
         CheckPointDown();
         cam = Camera.main;
     }
@@ -43,20 +54,22 @@ public class PlayerController : MonoBehaviour
     {
         CheckPointDown();
 
-        if(Input.GetMouseButtonUp(0))
+        // 攀爬状态与正在拖动时无法移动
+        if(Input.GetMouseButtonUp(0) && !isClimbing && !DraggableObject.IsDragging)
         {
             indicator.GetComponentInChildren<ParticleSystem>().Stop();
 
             Vector2 mousePos = Input.mousePosition;
             Vector2 targetPos = cam.ScreenToWorldPoint(mousePos);
-            targetWayPoint = FindClosestWayPoint(targetPos);
+            targetWayPoint = WayPointBehaviour.FindClosestWayPoint(targetPos);
             if(targetWayPoint == null)
             {
                 return;
             }
             movingSequence.Kill();
+
             ClearPath();
-            FindPath();
+            AstarPathFinding();
 
             // 指示物
             indicator.position = new Vector3(targetWayPoint.position.x, targetWayPoint.position.y + indicatorHeight, transform.position.z);
@@ -101,71 +114,75 @@ public class PlayerController : MonoBehaviour
         }
 
         currentWayPoint = nearestWayPoint;
+
+        // 人物随当前路径点所在物体移动而移动
+        transform.parent = currentWayPoint.parent;
     }
 
     /// <summary>
-    /// 找到当前路径点到目的路径点的一条可行通路
+    /// A*寻路：找到目标点则调用BuildPath
     /// </summary>
-    private void FindPath()
-    {
-        List<Transform> nextWayPoints = new List<Transform>();
-        List<Transform> pastWayPoints = new List<Transform>();
-
-        foreach(WayPath path in currentWayPoint.GetComponent<WayPoint>().neighbors)
-        {
-            if(path.isActive)
-            {
-                nextWayPoints.Add(path.target);
-                path.target.GetComponent<WayPoint>().previousWayPoint = currentWayPoint;
-            }
-        }
-
-        pastWayPoints.Add(currentWayPoint);
-
-        ExploreWayPoint(nextWayPoints,pastWayPoints);
-        BuildPath();
-    }
-
     private void AstarPathFinding()
     {
-        WayPoint start = currentWayPoint?.GetComponent<WayPoint>();
-        WayPoint end = targetWayPoint?.GetComponent<WayPoint>();
+        // 访问结点数
+        int visitedCount = 0;
 
-        openList.Add(start);
-        while(openList.Count > 0)
+        Debug.Log("A*寻路：");
+        WayPoint start = currentWayPoint.GetComponent<WayPoint>();
+        WayPoint end = targetWayPoint.GetComponent<WayPoint>();
+        if (start == null || end == null)
         {
-
-        }
-    }
-
-    private void ExploreWayPoint(List<Transform> nextWayPoints, List<Transform> visitedWayPoints)
-    {
-        // 取下一个可达路径点 且根据目标路径点targetWayPoint选择优先级
-        Transform current = nextWayPoints.First();
-        nextWayPoints.Remove(current);
-
-        if (current == targetWayPoint)
-        {
-            Debug.LogFormat("访问了{0}个结点", visitedWayPoints.Count);
+            Debug.LogWarning("寻路起始点或终点为空");
             return;
         }
 
-        foreach(WayPath path in current.GetComponent<WayPoint>().neighbors)
+        openList.Enqueue(start, 0);
+        while (openList.Count > 0)
         {
-            // 若有未访问过的可达路径点，保存
-            if(!visitedWayPoints.Contains(path.target) && path.isActive)
+            // 取得最小cost的路径点作为当前路径点
+            float currentPriority = openList.GetPriority(openList.First());
+            WayPoint currentNode = openList.Dequeue();
+            // 如果已经是目标点则停止
+            if (currentNode.transform == targetWayPoint)
             {
-                nextWayPoints.Add(path.target);
-                path.target.GetComponent<WayPoint>().previousWayPoint = current;
+                Debug.LogFormat("访问了{0}个结点", visitedCount);
+                BuildPath();
+                return;
             }
-
-            visitedWayPoints.Add(current);
+            // 从邻居路径点中选择符合条件的加入openList
+            var currentNeighbors = currentNode.neighbors;
+            for(int i = 0; i < currentNeighbors.Count; ++i)
+            {
+                if (currentNeighbors[i].isActive == false) continue;
+                ++visitedCount; 
+                WayPoint neighborNode = currentNeighbors[i].target;
+                // 计算cost TODO:修改启发式
+                float fCost, gCost, hCost; // f = g + h
+                gCost = Vector2.Distance(start.transform.position, neighborNode.transform.position);
+                hCost = Vector2.Distance(neighborNode.transform.position, end.transform.position);
+                fCost = gCost + hCost;
+                // 如果该邻居路径点已经在openList中，且cost高于openList中的该邻居路径点，则舍弃
+                if(openList.Contains(neighborNode) && openList.GetPriority(neighborNode) - fCost <= 0.001f)
+                {
+                    continue;
+                }
+                // 如果该邻居路径点已经在closeList中，且cost高于closeList中的该邻居路径点，则舍弃
+                if(closeList.Contains(neighborNode) && closeList.GetPriority(neighborNode) - fCost <= 0.001f)
+                {
+                    continue;
+                }
+                // 如果该邻居路径点存在openList/closeList中，
+                // 且cost低于openList/closeList中的该邻居路径点，移除旧结点
+                openList.TryRemove(neighborNode);
+                closeList.TryRemove(neighborNode);
+                // 新结点加入openList
+                openList.Enqueue(neighborNode, fCost);
+                neighborNode.previousWayPoint = currentNode.transform;
+            }
+            // 将当前路径点放入closeList
+            closeList.Enqueue(currentNode, currentPriority);
         }
-
-        if (nextWayPoints.Any())
-        {
-            ExploreWayPoint(nextWayPoints, visitedWayPoints);
-        }
+        Debug.Log("无可行路径");
     }
 
     /// <summary>
@@ -180,12 +197,11 @@ public class PlayerController : MonoBehaviour
         Transform pathWayPoint = targetWayPoint;
         while(pathWayPoint != currentWayPoint)
         {
-            finalPathPoints.Add(pathWayPoint);
             Transform prev = pathWayPoint.GetComponent<WayPoint>().previousWayPoint;
 
             // 获取边信息，存入finalPath<WayPath>
             finalPath.Add(prev.GetComponent<WayPoint>().neighbors.Find(
-                x => x.target == pathWayPoint));
+                x => x.target.transform == pathWayPoint));
 
             if (prev != null)
                 pathWayPoint = prev;
@@ -193,17 +209,15 @@ public class PlayerController : MonoBehaviour
                 return;
         }
 
-        Debug.LogFormat("找到路径含{0}个结点", finalPathPoints.Count);
+        Debug.LogFormat("找到路径含{0}个结点", finalPath.Count + 1); // 结点数=边数+1
         FollowPath();
     }
 
     /// <summary>
-    /// 人物行走控制
+    /// 人物行走位移动画
     /// </summary>
     private void FollowPath()
     {
-        Debug.Log("有可行路径");
-
         isMoving = true;
 
         movingSequence = DOTween.Sequence();
@@ -213,21 +227,75 @@ public class PlayerController : MonoBehaviour
 
         for (int i = finalPath.Count - 1; i >= 0; --i)
         {
-            // 动画时间
-            float time = 0f;
-            if (finalPath[i].isClimbUp || finalPath[i].isClimbDown)
-                time = 1.5f;
-            else if (finalPath[i].isDropDown)
-                time = 0.5f;
-            else
-                time = 1f;
+            Vector2 nextPos = finalPath[i].target.transform.position;
 
-            Vector2 nextPos = finalPathPoints[i].position;
+            // 包含动画：判断pathType插入动画
+            if (finalPath[i].pathType != WayPath.PathType.Normal)
+            {
+                float timeCount = 0;
+                // 动画播放时间
+                float animTime = 0;
+                switch (finalPath[i].pathType)
+                {
+                    case WayPath.PathType.ClimbUp:
+                    case WayPath.PathType.ClimbDown:
+                        animTime = climbTime;
+                        break;
+                    case WayPath.PathType.LadderUp:
+                    case WayPath.PathType.LadderDown:
+                        animTime = ladderTime;
+                        break;
+                    case WayPath.PathType.DropDown:
+                        animTime = dropTime;
+                        break;
+                }
+                movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, animTime, animTime)
+                    .OnStart(() => 
+                    {
+                        isClimbing = true;
+                        // TODO：获取并修改动画状态机中bool值
+                        switch(finalPath[i].pathType)
+                        {
+                            case WayPath.PathType.ClimbUp:
+                                break;
+                            case WayPath.PathType.ClimbDown:
+                                break;
+                            case WayPath.PathType.LadderUp:
+                                break;
+                            case WayPath.PathType.LadderDown:
+                                break;
+                            case WayPath.PathType.DropDown:
+                                break;
+                        }
+                    }) 
+                    .OnComplete(() => 
+                    {
+                        transform.position = new Vector3(nextPos.x, nextPos.y, transform.position.z);
+                        isClimbing = false;
+                        // TODO：获取并修改动画状态机中bool值
+                        switch (finalPath[i].pathType)
+                        {
+                            case WayPath.PathType.ClimbUp:
+                                break;
+                            case WayPath.PathType.ClimbDown:
+                                break;
+                            case WayPath.PathType.LadderUp:
+                                break;
+                            case WayPath.PathType.LadderDown:
+                                break;
+                            case WayPath.PathType.DropDown:
+                                break;
+                        }
+                    }));
+                curPos = nextPos;
+                continue;
+            }
 
-            // 根据距离处理移动时间
+            // Normal：根据距离处理移动时间
             float distance = Vector2.Distance(curPos, nextPos);
 
-            movingSequence.Append(transform.DOMove(finalPathPoints[i].position, distance / moveSpeed * time).SetEase(Ease.Linear));
+            movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z),
+                distance / moveSpeed).SetEase(Ease.Linear));
 
             curPos = nextPos;
         }
@@ -239,43 +307,16 @@ public class PlayerController : MonoBehaviour
     {
         foreach (WayPoint t in WayPointBehaviour.Instances)
             t.previousWayPoint = null;
-        finalPathPoints.Clear();
+        openList.Clear();
+        closeList.Clear();
         finalPath.Clear();
         isMoving = false;
     }
 
-    /// <summary>
-    /// 找到与给定位置最符合要求的路径点
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public Transform FindClosestWayPoint(Vector2 pos)
+    private void StopMoving()
     {
-        Transform target;
-        // X轴范围选取(LINQ)
-        var xPosList =
-            from wp in WayPointBehaviour.Instances
-            where Mathf.Abs(wp.transform.position.x - pos.x) <= 1.0f
-            select wp;
-        // 高度判断，舍去高度高于目标位置的点
-        var heightList =
-            from wp in xPosList
-            where wp.transform.position.y <= pos.y
-            select wp;
-        // 距离判断
-        if (!heightList.Any())
-            return null;
-        target = heightList.First().transform;
-        float minDistance = Vector2.Distance(target.position,pos);
-        foreach(WayPoint wp in heightList)
-        {
-            float distance = Vector2.Distance(wp.transform.position, pos);
-            if (distance <= minDistance)
-            {
-                target = wp.transform;
-                minDistance = distance;
-            }
-        }
-        return target;
+        movingSequence.Kill();
+        ClearPath();
     }
+
 }
