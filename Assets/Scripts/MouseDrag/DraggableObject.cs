@@ -23,7 +23,12 @@ public class DraggableObject : MonoBehaviour
             Debug.LogErrorFormat("{0}没有绑定DraggingAction组件", gameObject.name);
         IsDragging = false;
     }
-  
+
+    private void OnMouseDown()
+    {
+        EventCenter.GetInstance().EventTrigger(GameEvent.StopPlyaerMoving);
+    }
+
     // OnMouseDown先于OnMouseDrag执行
     private void OnMouseDrag()
     {

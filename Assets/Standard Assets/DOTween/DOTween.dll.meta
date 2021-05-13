@@ -4,7 +4,8 @@ PluginImporter:
   externalObjects: {}
   serializedVersion: 2
   iconMap: {}
-  executionOrder: {}
+  executionOrder:
+    DG.Tweening.Core.DOTweenComponent: 5
   defineConstraints: []
   isPreloaded: 0
   isOverridable: 0

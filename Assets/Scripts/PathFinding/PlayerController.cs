@@ -29,10 +29,20 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     [Space]
     // 各类动作的动画时间
-    // TODO：配置各类动作的动画时间
     [SerializeField] private float climbTime = default;
     [SerializeField] private float ladderTime = default;
     [SerializeField] private float dropTime = default;
+    [SerializeField] private float turnTime = default;
+
+    [Space]
+    [SerializeField] private Animator animator = default;
+    [SerializeField] private AnimationClip climbAnimClip = default;
+    [SerializeField] private AnimationClip turnAnimClip = default;
+    [SerializeField] private AnimationClip firstStepAnimClip = default;
+
+    private SpriteRenderer sr;
+    private Transform spriteTsf;
+    private Vector3 afterClimbPos;
 
     // 位移动画序列
     private Sequence movingSequence;
@@ -45,9 +55,16 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void Start()
     {
-        EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, StopMoving);
+        EventCenter.GetInstance().AddEventListener(GameEvent.StopPlyaerMoving, StopMoving);
         CheckPointDown();
+
         cam = Camera.main;
+        spriteTsf = transform.Find("Sprite");
+        sr = spriteTsf.GetComponent<SpriteRenderer>();
+
+        climbTime = climbAnimClip.length;
+        turnTime = turnAnimClip.length + firstStepAnimClip.length;
+        // TODO: ladderTime dropTime
     }
 
     private void Update()
@@ -72,9 +89,9 @@ public class PlayerController : MonoSingleton<PlayerController>
             AstarPathFinding();
 
             // 指示物
-            indicator.position = new Vector3(targetWayPoint.position.x, targetWayPoint.position.y + indicatorHeight, transform.position.z);
-            Sequence s = DOTween.Sequence();
-            s.AppendCallback(() => indicator.GetComponentInChildren<ParticleSystem>().Play());
+            //indicator.position = new Vector3(targetWayPoint.position.x, targetWayPoint.position.y + indicatorHeight, transform.position.z);
+            //Sequence s = DOTween.Sequence();
+            //s.AppendCallback(() => indicator.GetComponentInChildren<ParticleSystem>().Play());
         }
     }
 
@@ -116,7 +133,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         currentWayPoint = nearestWayPoint;
 
         // 人物随当前路径点所在物体移动而移动
-        transform.parent = currentWayPoint.parent;
+        transform.parent = currentWayPoint?.parent;
     }
 
     /// <summary>
@@ -190,9 +207,13 @@ public class PlayerController : MonoSingleton<PlayerController>
     /// </summary>
     private void BuildPath()
     {
-        // 若目的路径点没有previousWayPoint，则说明找不到路径
+        // 若目的路径点没有previousWayPoint，则说明目的路径点即当前路径点
         if (targetWayPoint.GetComponent<WayPoint>().previousWayPoint == null)
+        {
+            ClearPath();
+            StopMoving();
             return;
+        }
 
         Transform pathWayPoint = targetWayPoint;
         while(pathWayPoint != currentWayPoint)
@@ -208,8 +229,8 @@ public class PlayerController : MonoSingleton<PlayerController>
             else
                 return;
         }
-
-        Debug.LogFormat("找到路径含{0}个结点", finalPath.Count + 1); // 结点数=边数+1
+        // 结点数=边数+1
+        Debug.LogFormat("找到路径含{0}个结点", finalPath.Count + 1);
         FollowPath();
     }
 
@@ -218,9 +239,16 @@ public class PlayerController : MonoSingleton<PlayerController>
     /// </summary>
     private void FollowPath()
     {
-        isMoving = true;
-
         movingSequence = DOTween.Sequence();
+        animator.SetBool("Walk", true);
+
+        if (!isMoving)
+        {
+            isMoving = true;
+            float timeCount = 0f;
+            movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, turnTime, turnTime)
+                .OnStart(() => CheckFlip(finalPath[finalPath.Count - 1].target.transform.position)));
+        }
 
         // 这里获取真实位置，在序列提前结束的情况下仍能维持同样的移动速度
         Vector2 curPos = transform.position;
@@ -228,14 +256,15 @@ public class PlayerController : MonoSingleton<PlayerController>
         for (int i = finalPath.Count - 1; i >= 0; --i)
         {
             Vector2 nextPos = finalPath[i].target.transform.position;
+            WayPath.PathType thisPathType = finalPath[i].pathType;
 
             // 包含动画：判断pathType插入动画
-            if (finalPath[i].pathType != WayPath.PathType.Normal)
+            if (thisPathType != WayPath.PathType.Normal)
             {
                 float timeCount = 0;
                 // 动画播放时间
                 float animTime = 0;
-                switch (finalPath[i].pathType)
+                switch (thisPathType)
                 {
                     case WayPath.PathType.ClimbUp:
                     case WayPath.PathType.ClimbDown:
@@ -250,13 +279,21 @@ public class PlayerController : MonoSingleton<PlayerController>
                         break;
                 }
                 movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, animTime, animTime)
-                    .OnStart(() => 
+                    .OnStart(() =>
                     {
+                        //spriteTsf.parent = transform.parent;
+                        // Climb相关设置
+                        countDown = 0f;
+                        checkOnce = false;
+                        afterClimbPos = nextPos;
+
+                        CheckFlip(nextPos);
                         isClimbing = true;
                         // TODO：获取并修改动画状态机中bool值
-                        switch(finalPath[i].pathType)
+                        switch (thisPathType)
                         {
                             case WayPath.PathType.ClimbUp:
+                                animator.SetBool("Climb", true);
                                 break;
                             case WayPath.PathType.ClimbDown:
                                 break;
@@ -267,27 +304,51 @@ public class PlayerController : MonoSingleton<PlayerController>
                             case WayPath.PathType.DropDown:
                                 break;
                         }
-                    }) 
-                    .OnComplete(() => 
+                    })
+                    .OnUpdate(() =>
                     {
-                        transform.position = new Vector3(nextPos.x, nextPos.y, transform.position.z);
-                        isClimbing = false;
-                        // TODO：获取并修改动画状态机中bool值
-                        switch (finalPath[i].pathType)
+                        Debug.Log("OnTweenUpdate" + timeCount);
+                        if (animTime - timeCount <= 0.5f)
                         {
-                            case WayPath.PathType.ClimbUp:
-                                break;
+                            // TODO：获取并修改动画状态机中bool值
+                            switch (thisPathType)
+                            {
+                                case WayPath.PathType.ClimbUp:
+                                    animator.SetBool("Climb", false);
+                                    break;
+                                case WayPath.PathType.ClimbDown:
+                                    break;
+                                case WayPath.PathType.LadderUp:
+                                    break;
+                                case WayPath.PathType.LadderDown:
+                                    break;
+                                case WayPath.PathType.DropDown:
+                                    break;
+                            }
+                        }
+                    })
+                    .OnComplete(() =>
+                    {
+                        //transform.position = new Vector3(nextPos.x, nextPos.y, transform.position.z);
+                        //spriteTsf.position = transform.position;
+                        //spriteTsf.parent = transform;
+                        Debug.Log("OnTweenComplete");
+                        checkOnce = false;
+                        switch (thisPathType) 
+                        { 
+                            // TO MODIFY: 暂时需要将ClimbDown位置更改和isClimbing设置放在这里，添加爬下动画后再放在FixedUpdate中
                             case WayPath.PathType.ClimbDown:
-                                break;
                             case WayPath.PathType.LadderUp:
-                                break;
                             case WayPath.PathType.LadderDown:
-                                break;
                             case WayPath.PathType.DropDown:
+                                transform.position = new Vector3(nextPos.x, nextPos.y, transform.position.z);
+                                isClimbing = false;
                                 break;
                         }
-                    }));
+                    })
+                    .SetUpdate(UpdateType.Fixed));
                 curPos = nextPos;
+                movingSequence.AppendInterval(0.1f);
                 continue;
             }
 
@@ -295,12 +356,31 @@ public class PlayerController : MonoSingleton<PlayerController>
             float distance = Vector2.Distance(curPos, nextPos);
 
             movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z),
-                distance / moveSpeed).SetEase(Ease.Linear));
+                distance / moveSpeed).SetEase(Ease.Linear).OnStart(()=> { Debug.Log("startNormal"); CheckFlip(nextPos); }));
 
             curPos = nextPos;
         }
 
-        movingSequence.AppendCallback(() => ClearPath());
+        movingSequence.AppendCallback(() => { ClearPath(); StopMoving(); });
+    }
+
+
+    private bool checkOnce = false;
+    private float countDown = 0f;
+    private void FixedUpdate()
+    {
+        Debug.Log("fixedUpdate:" + countDown);
+        if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("爬"))
+        {
+            countDown += Time.deltaTime;
+        }
+        if(countDown - climbTime >= 0.001f && !checkOnce)
+        {
+            Debug.Log(countDown);
+            checkOnce = !checkOnce;
+            transform.position = new Vector3(afterClimbPos.x, afterClimbPos.y, transform.position.z);
+            isClimbing = false;
+        }
     }
 
     private void ClearPath()
@@ -310,13 +390,17 @@ public class PlayerController : MonoSingleton<PlayerController>
         openList.Clear();
         closeList.Clear();
         finalPath.Clear();
-        isMoving = false;
     }
 
     private void StopMoving()
     {
         movingSequence.Kill();
-        ClearPath();
+        isMoving = false;
+        animator.SetBool("Walk", false);
     }
 
+    private void CheckFlip(Vector3 toward)
+    {
+        sr.flipX = (toward - transform.position).normalized.x < 0 ? true : false;
+    }
 }

@@ -7,6 +7,7 @@ public static class GameEvent
     // 无参事件
     public const string OnDragStart = "OnDragStart";
     public const string OnDragEnd = "OnDragEnd";
+    public const string StopPlyaerMoving = "StopPlayerMoving";
 
     // 单参数事件
     public const string ModifyMovingLock = "ModifyMovingLock";
