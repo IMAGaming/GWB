@@ -129,8 +129,8 @@ public class PlayerController : MonoSingleton<PlayerController>
                 }
             }
         }
-
-        currentWayPoint = nearestWayPoint;
+        if(nearestWayPoint != null)
+            currentWayPoint = nearestWayPoint;
 
         // 人物随当前路径点所在物体移动而移动
         transform.parent = currentWayPoint?.parent;
@@ -278,7 +278,7 @@ public class PlayerController : MonoSingleton<PlayerController>
                         animTime = dropTime;
                         break;
                 }
-                movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, animTime, animTime)
+                movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, animTime, animTime).SetEase(Ease.Linear).SetUpdate(UpdateType.Fixed)
                     .OnStart(() =>
                     {
                         //spriteTsf.parent = transform.parent;
@@ -286,7 +286,7 @@ public class PlayerController : MonoSingleton<PlayerController>
                         countDown = 0f;
                         checkOnce = false;
                         afterClimbPos = nextPos;
-
+                        Debug.LogFormat("OnTweenStart：{0}【{1}】【Time.time:{2}】", timeCount, countDown, Time.time);
                         CheckFlip(nextPos);
                         isClimbing = true;
                         // TODO：获取并修改动画状态机中bool值
@@ -307,7 +307,7 @@ public class PlayerController : MonoSingleton<PlayerController>
                     })
                     .OnUpdate(() =>
                     {
-                        Debug.Log("OnTweenUpdate" + timeCount);
+                        Debug.LogFormat("OnTweenUpdate：{0}【{1}】【动画时间：{2}】【Time.time:{3}】", timeCount, countDown, animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).normalizedTime * climbTime,Time.time);
                         if (animTime - timeCount <= 0.5f)
                         {
                             // TODO：获取并修改动画状态机中bool值
@@ -332,10 +332,10 @@ public class PlayerController : MonoSingleton<PlayerController>
                         //transform.position = new Vector3(nextPos.x, nextPos.y, transform.position.z);
                         //spriteTsf.position = transform.position;
                         //spriteTsf.parent = transform;
-                        Debug.Log("OnTweenComplete");
+                        Debug.LogFormat("OnTweenComplete:【{0}】",countDown);
                         checkOnce = false;
-                        switch (thisPathType) 
-                        { 
+                        switch (thisPathType)
+                        {
                             // TO MODIFY: 暂时需要将ClimbDown位置更改和isClimbing设置放在这里，添加爬下动画后再放在FixedUpdate中
                             case WayPath.PathType.ClimbDown:
                             case WayPath.PathType.LadderUp:
@@ -345,18 +345,18 @@ public class PlayerController : MonoSingleton<PlayerController>
                                 isClimbing = false;
                                 break;
                         }
-                    })
-                    .SetUpdate(UpdateType.Fixed));
+                    }));
                 curPos = nextPos;
-                movingSequence.AppendInterval(0.1f);
+                movingSequence.AppendInterval(0.5f);
                 continue;
             }
 
             // Normal：根据距离处理移动时间
             float distance = Vector2.Distance(curPos, nextPos);
 
-            movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z),
-                distance / moveSpeed).SetEase(Ease.Linear).OnStart(()=> { Debug.Log("startNormal"); CheckFlip(nextPos); }));
+            movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z),distance / moveSpeed).SetEase(Ease.Linear)
+                .OnStart(()=> CheckFlip(nextPos))
+                .OnComplete(() => Debug.LogFormat("OnComplete:{0}",Time.time)));
 
             curPos = nextPos;
         }
@@ -369,12 +369,11 @@ public class PlayerController : MonoSingleton<PlayerController>
     private float countDown = 0f;
     private void FixedUpdate()
     {
-        Debug.Log("fixedUpdate:" + countDown);
         if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("爬"))
         {
             countDown += Time.deltaTime;
         }
-        if(countDown - climbTime >= 0.001f && !checkOnce)
+        if (countDown - climbTime >= 0.001f && !checkOnce)
         {
             Debug.Log(countDown);
             checkOnce = !checkOnce;

@@ -26,7 +26,7 @@ public class DraggableObject : MonoBehaviour
 
     private void OnMouseDown()
     {
-        EventCenter.GetInstance().EventTrigger(GameEvent.StopPlyaerMoving);
+        //EventCenter.GetInstance().EventTrigger(GameEvent.StopPlyaerMoving);
     }
 
     // OnMouseDown先于OnMouseDrag执行
@@ -38,6 +38,7 @@ public class DraggableObject : MonoBehaviour
         dragTimer += Time.deltaTime;
         if (IsDragging == false && dragTimer >= dragTime)
         {
+            EventCenter.GetInstance().EventTrigger(GameEvent.StopPlyaerMoving);
             draggingAction.OnDragStart();
             IsDragging = true;
         }
