@@ -55,7 +55,7 @@ public class PlayerController : MonoSingleton<PlayerController>
 
     private void Start()
     {
-        EventCenter.GetInstance().AddEventListener(GameEvent.StopPlyaerMoving, StopMoving);
+        EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, StopMoving);
         CheckPointDown();
 
         cam = Camera.main;
@@ -72,7 +72,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         CheckPointDown();
 
         // 攀爬状态与正在拖动时无法移动
-        if(Input.GetMouseButtonUp(0) && !isClimbing && !DraggableObject.IsDragging)
+        if(Input.GetMouseButtonUp(0) && !isClimbing && !DraggingAction.IsDragging)
         {
             indicator.GetComponentInChildren<ParticleSystem>().Stop();
 
@@ -307,7 +307,9 @@ public class PlayerController : MonoSingleton<PlayerController>
                     })
                     .OnUpdate(() =>
                     {
-                        Debug.LogFormat("OnTweenUpdate：{0}【{1}】【动画时间：{2}】【Time.time:{3}】", timeCount, countDown, animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).normalizedTime * climbTime,Time.time);
+                        Debug.LogFormat("OnTweenUpdate：【timeCount:{0}】【countDown:{1}】【动画时间：{2}】【当前动画：{3}】【Time.time:{4}】",
+                            timeCount, countDown, animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).normalizedTime * climbTime,
+                            animator.GetCurrentAnimatorClipInfo(0)[0].clip.name,Time.time);
                         if (animTime - timeCount <= 0.5f)
                         {
                             // TODO：获取并修改动画状态机中bool值
@@ -375,7 +377,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         }
         if (countDown - climbTime >= 0.001f && !checkOnce)
         {
-            Debug.Log(countDown);
+            Debug.LogFormat("攀爬动画结束：【countDown:{0}】",countDown);
             checkOnce = !checkOnce;
             transform.position = new Vector3(afterClimbPos.x, afterClimbPos.y, transform.position.z);
             isClimbing = false;

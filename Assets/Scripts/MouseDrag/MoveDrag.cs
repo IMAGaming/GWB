@@ -16,7 +16,7 @@ public class MoveDrag : DraggingAction
     [SerializeField] private List<WayPoint> stopPoints = new List<WayPoint>();
 
     private Camera cam;
-    private float progressValue;
+    private float progressValue; // 当前progress值 拖动时即时更新
     private float offsetLength;
     private Vector3 dragStartPos; // 记录拖拽开始时的位置
     private Vector3 originPos; // 保存最开始未拖拽时的位置
@@ -56,6 +56,7 @@ public class MoveDrag : DraggingAction
 
     public override void OnDragStart()
     {
+        IsDragging = true;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         dragStartPos = transform.position;
@@ -73,7 +74,7 @@ public class MoveDrag : DraggingAction
 
         if (progressValue > 1)
             progressValue = 1;
-        if (progressValue < 0)
+        else if (progressValue < 0)
             progressValue = 0;
 
         Vector2 lerpResult = Vector2.Lerp(offsetStart, offsetEnd, progressValue);
@@ -91,10 +92,11 @@ public class MoveDrag : DraggingAction
         else
             targetTsf = WayPointBehaviour.FindClosestWayPoint(transform.position);
         Vector3 targetPos = targetTsf ? targetTsf.position : dragStartPos;
-        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), animTime)
+        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime)
             .OnComplete(()=> { 
                 progressValue = Vector2.Distance(targetPos, (Vector2)originPos + offsetStart) / offsetLength;
                 WayPathUpdate();
+                IsDragging = false;
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
             });
     }
