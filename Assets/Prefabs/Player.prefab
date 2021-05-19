@@ -126,7 +126,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6695753530257985128}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.19, y: -3.087, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -148,7 +148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMoving: 0
   isClimbing: 0
-  indicator: {fileID: 0}
+  indicator: {fileID: 5734618834543457424, guid: 6e3df425f5049bc40aedae22232eea20,
+    type: 3}
   finalPath: []
   moveSpeed: 1
   checkRange: 0.5

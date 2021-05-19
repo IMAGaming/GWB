@@ -42,9 +42,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BG
+  - name: Back
     uniqueID: 2539006791
     locked: 0
   - name: SceneObject
     uniqueID: 233955125
+    locked: 0
+  - name: Front
+    uniqueID: 1692713791
     locked: 0

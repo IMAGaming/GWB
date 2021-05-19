@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
+using System;
 
 public class AxisRotateDrag : DraggingAction
 {
     // Start和End对应拖动进度progress的0和1
-    [SerializeField] private Transform offsetStart;
-    [SerializeField] private Transform offsetEnd;
+    [SerializeField] private Transform offsetStart = default;
+    [SerializeField] private Transform offsetEnd = default;
 
     [SerializeField] private Animator animator = default;
     private AnimatorStateInfo animatorStateInfo;
@@ -59,7 +59,7 @@ public class AxisRotateDrag : DraggingAction
 
     public override void OnDragEnd()
     {
-        IsDragging = false;
+        Invoke("DelayDrag", 0.1f);
         if (progressValue >= 0.5f)
         {
             animator.SetFloat("PlaySpeed", 1f);
@@ -72,4 +72,13 @@ public class AxisRotateDrag : DraggingAction
         }
     }
 
+    private void DelayDrag()
+    {
+        IsDragging = false;
+    }
+
+    public void TestLog()
+    {
+        Debug.Log("这是一个帧事件");
+    }
 }
