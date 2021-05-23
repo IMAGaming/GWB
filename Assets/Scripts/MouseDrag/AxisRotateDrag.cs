@@ -10,7 +10,7 @@ public class AxisRotateDrag : DraggingAction
     [SerializeField] private Transform offsetEnd = default;
 
     [SerializeField] private Animator animator = default;
-    private AnimatorStateInfo animatorStateInfo;
+    [SerializeField] private AnimationClip rotationClip = default;
 
     private Camera cam;
     private float progressValue; // 当前progress值 拖动时即时更新
@@ -28,13 +28,13 @@ public class AxisRotateDrag : DraggingAction
         progressValue = 0f;
         // 设置动画进度 设置后动画自动暂停
         animator = GetComponent<Animator>();
-        animatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
         animator.Play("Rotation", 0, progressValue);
+        rotationClip = animator.runtimeAnimatorController.animationClips[0];
     }
 
     public override void OnDragStart()
     {
-        IsDragging = true;
+        base.OnDragStart();
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
     }
@@ -59,7 +59,7 @@ public class AxisRotateDrag : DraggingAction
 
     public override void OnDragEnd()
     {
-        Invoke("DelayDrag", 0.1f);
+        Invoke("DelayDrag", (1 - progressValue) * rotationClip.length);
         if (progressValue >= 0.5f)
         {
             animator.SetFloat("PlaySpeed", 1f);
@@ -74,7 +74,8 @@ public class AxisRotateDrag : DraggingAction
 
     private void DelayDrag()
     {
-        IsDragging = false;
+        base.OnDragEnd();
+        EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
     }
 
     public void TestLog()

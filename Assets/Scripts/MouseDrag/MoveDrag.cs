@@ -14,6 +14,10 @@ public class MoveDrag : DraggingAction
 
     // 停止点，数量为0的话则在全部路径点选取最近的
     [SerializeField] private List<WayPoint> stopPoints = new List<WayPoint>();
+    // 动画恢复时间
+    [SerializeField] private float recoverTime = 1f;
+    // 缓动类型
+    [SerializeField] private Ease easeType = DOTween.defaultEaseType;
 
     private Camera cam;
     private float progressValue; // 当前progress值 拖动时即时更新
@@ -58,7 +62,7 @@ public class MoveDrag : DraggingAction
 
     public override void OnDragStart()
     {
-        IsDragging = true;
+        base.OnDragStart();
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         dragStartPos = transform.position;
@@ -94,11 +98,11 @@ public class MoveDrag : DraggingAction
         else
             targetTsf = WayPointBehaviour.FindClosestWayPoint(transform.position);
         Vector3 targetPos = targetTsf ? targetTsf.position : dragStartPos;
-        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime)
+        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime).SetEase(easeType)
             .OnComplete(()=> { 
                 progressValue = Vector2.Distance(targetPos, (Vector2)originPos + offsetStart) / offsetLength;
                 wayPointConnector?.WayPathUpdate();
-                IsDragging = false;
+                base.OnDragEnd();
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
             });
     }

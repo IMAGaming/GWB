@@ -5,11 +5,28 @@ using System.Linq;
 using DG.Tweening;
 using Priority_Queue;
 
-public class PlayerController : MonoSingleton<PlayerController>
+public class PlayerController : MonoBehaviour
 {
+    #region 单例
+    public static PlayerController Instance { get; private set; }
+
+    protected void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = (PlayerController)this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    #endregion
+
     // TODO:有限状态机？
     public bool isMoving = false;
     public bool isClimbing = false;
+    public bool isAllowMove = true;
 
     [Space]
 
@@ -40,6 +57,9 @@ public class PlayerController : MonoSingleton<PlayerController>
     [SerializeField] private AnimationClip turnAnimClip = default;
     [SerializeField] private AnimationClip firstStepAnimClip = default;
 
+    // 字符串Hash ID
+    private int climbBoolHash;
+
     private SpriteRenderer sr;
     private Transform spriteTsf;
     private Vector3 afterClimbPos;
@@ -62,6 +82,9 @@ public class PlayerController : MonoSingleton<PlayerController>
         spriteTsf = transform.Find("Sprite");
         sr = spriteTsf.GetComponent<SpriteRenderer>();
 
+        // 生成字符串ID
+        climbBoolHash = Animator.StringToHash("climb");
+
         climbTime = climbAnimClip.length;
         turnTime = turnAnimClip.length + firstStepAnimClip.length;
         // TODO: ladderTime dropTime
@@ -72,7 +95,7 @@ public class PlayerController : MonoSingleton<PlayerController>
         CheckPointDown();
 
         // 攀爬状态与正在拖动时无法移动
-        if(Input.GetMouseButtonUp(0) && !isClimbing && !DraggingAction.IsDragging)
+        if(Input.GetMouseButtonUp(0) && !isClimbing && isAllowMove)
         {
             indicator.GetComponentInChildren<ParticleSystem>().Stop();
 
@@ -293,7 +316,8 @@ public class PlayerController : MonoSingleton<PlayerController>
                         switch (thisPathType)
                         {
                             case WayPath.PathType.ClimbUp:
-                                animator.SetBool("Climb", true);
+                                animator.SetBool(climbBoolHash, true);
+                                animator.Play("爬", 0);
                                 break;
                             case WayPath.PathType.ClimbDown:
                                 break;
@@ -349,7 +373,7 @@ public class PlayerController : MonoSingleton<PlayerController>
                         }
                     }));
                 curPos = nextPos;
-                movingSequence.AppendInterval(0.5f);
+                movingSequence.AppendInterval(0.05f);
                 continue;
             }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameEvent 
+public class GameEvent : Singleton<GameEvent> 
 {
     // 无参事件
     public const string OnDragStart = "OnDragStart";

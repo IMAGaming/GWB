@@ -25,7 +25,7 @@ public class DraggableObject : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //EventCenter.GetInstance().EventTrigger(GameEvent.StopPlyaerMoving);
+
     }
 
     // OnMouseDown先于OnMouseDrag执行
@@ -37,10 +37,10 @@ public class DraggableObject : MonoBehaviour
         dragTimer += Time.deltaTime;
         if (DraggingAction.IsDragging == false && dragTimer >= dragTime)
         {
-            EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
             draggingAction.OnDragStart();
         }
 
+        // 这里逻辑有点小问题
         if(DraggingAction.IsDragging)
         {
             draggingAction.OnDragUpdate();
@@ -50,10 +50,7 @@ public class DraggableObject : MonoBehaviour
     private void OnMouseUp()
     {
         if(DraggingAction.IsDragging)
-        {
-            EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
             draggingAction.OnDragEnd();
-        }
         dragTimer = 0f;
     }
 

@@ -8,11 +8,15 @@ using UnityEngine;
 [RequireComponent(typeof(DraggableObject))]
 public abstract class DraggingAction : MonoBehaviour
 {
+    /// <summary>
+    /// 场景中所有物体的拖拽状态
+    /// </summary>
     public static bool IsDragging { get; protected set; }
+
     /// <summary>
     /// 开始拖动（需要完成IsDragging = true）
     /// </summary>
-    public virtual void OnDragStart() { IsDragging = true; }
+    public virtual void OnDragStart() { IsDragging = true; PlayerController.Instance.isAllowMove = false; }
 
     /// <summary>
     /// 拖动时
@@ -22,11 +26,6 @@ public abstract class DraggingAction : MonoBehaviour
     /// <summary>
     /// 结束拖动（需要完成IsDragging = false）
     /// </summary>
-    public virtual void OnDragEnd() { IsDragging = false; }
-
-    /// <summary>
-    /// 拖拽结束后的动画时间
-    /// </summary>
-    public float recoverTime = 1f;
+    public virtual void OnDragEnd() { IsDragging = false; PlayerController.Instance.isAllowMove = true; }
 
 }
