@@ -27,12 +27,10 @@ public class MoveDrag : DraggingAction
     private Vector2 progressVec; // 保存
     private Vector2 curMousePos; // 当前帧鼠标位置
     private Vector2 prevMousePos; // 上一帧鼠标位置
-    private WayPointConnector wayPointConnector;
 
     private void Start()
     {
         cam = Camera.main;
-        wayPointConnector = GetComponent<WayPointConnector>();
         // 偏移相关变量
         progressVec = offsetEnd - offsetStart;
         offsetLength = progressVec.magnitude;
@@ -101,7 +99,6 @@ public class MoveDrag : DraggingAction
         transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime).SetEase(easeType)
             .OnComplete(()=> { 
                 progressValue = Vector2.Distance(targetPos, (Vector2)originPos + offsetStart) / offsetLength;
-                wayPointConnector?.WayPathUpdate();
                 base.OnDragEnd();
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
             });

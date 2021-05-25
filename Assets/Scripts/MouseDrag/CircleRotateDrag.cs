@@ -20,8 +20,8 @@ public class CircleRotateDrag : DraggingAction
     [System.Serializable]
     private class DegreeEvent
     {
-        public float degree;
-        public UnityEvent toRaise;
+        public float degree = default;
+        public UnityEvent toRaise = default;
     }
 
     private void Start()
@@ -69,6 +69,7 @@ public class CircleRotateDrag : DraggingAction
         transform.DORotate(targetRotation, recoverTime).SetEase(Ease.OutBack)
             .OnComplete(() => {
                 eventList[index].toRaise?.Invoke();
+                EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
                 originRotation = transform.eulerAngles;
                 PlayerController.Instance.isAllowMove = true;
             });

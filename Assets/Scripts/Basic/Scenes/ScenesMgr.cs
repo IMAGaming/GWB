@@ -11,6 +11,7 @@ public class SceneMgr : Singleton<SceneMgr>
     public void LoadScene(string name,UnityAction func) {
         //场景同步加载
         SceneManager.LoadScene(name);
+        EventCenter.GetInstance().EventTrigger("LoadScene");
         //加载完成过后才会执行func
         func();
     }

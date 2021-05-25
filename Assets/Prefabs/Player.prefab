@@ -148,6 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMoving: 0
   isClimbing: 0
+  isAllowMove: 1
   indicator: {fileID: 5734618834543457424, guid: 6e3df425f5049bc40aedae22232eea20,
     type: 3}
   finalPath: []
@@ -172,7 +173,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.026732117, y: 0.51763046}

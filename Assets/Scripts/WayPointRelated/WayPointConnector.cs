@@ -8,13 +8,14 @@ public class WayPointConnector : MonoBehaviour
     private void Awake()
     {
         WayPathUpdate();
+        EventCenter.GetInstance().AddEventListener(GameEvent.OnDragEnd, WayPathUpdate);
     }
 
     /// <summary>
     /// 待连接路径点
     /// </summary>
     [SerializeField]
-    private List<WayPointConnection> connections;
+    private List<WayPointConnection> connections = default;
 
     /// <summary>
     /// 动画结束后判断路径更新

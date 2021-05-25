@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
 
     private Transform currentWayPoint;
     private Transform targetWayPoint;
-    [SerializeField]private Transform indicator = default;
+    //[SerializeField]private Transform indicator = default;
 
     [Space]
     // 存储寻路结果
@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private float moveSpeed = .2f;
     [SerializeField] private float checkRange = 1.0f;
-    [SerializeField] private float indicatorHeight = 0.5f;
 
     [Space]
     // 各类动作的动画时间
@@ -56,6 +55,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AnimationClip climbAnimClip = default;
     [SerializeField] private AnimationClip turnAnimClip = default;
     [SerializeField] private AnimationClip firstStepAnimClip = default;
+
+    // 默认渲染层级
+    private int defaultSortingLayerID;
+    private int defaultSortingOrder;
 
     // 字符串Hash ID
     private int climbBoolHash;
@@ -76,11 +79,12 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, StopMoving);
-        CheckPointDown();
 
         cam = Camera.main;
         spriteTsf = transform.Find("Sprite");
         sr = spriteTsf.GetComponent<SpriteRenderer>();
+        defaultSortingLayerID = sr.sortingLayerID;
+        defaultSortingOrder = sr.sortingOrder;
 
         // 生成字符串ID
         climbBoolHash = Animator.StringToHash("climb");
@@ -97,7 +101,7 @@ public class PlayerController : MonoBehaviour
         // 攀爬状态与正在拖动时无法移动
         if(Input.GetMouseButtonUp(0) && !isClimbing && isAllowMove)
         {
-            indicator.GetComponentInChildren<ParticleSystem>().Stop();
+            //indicator.GetComponentInChildren<ParticleSystem>().Stop();
 
             Vector2 mousePos = Input.mousePosition;
             Vector2 targetPos = cam.ScreenToWorldPoint(mousePos);
@@ -155,8 +159,13 @@ public class PlayerController : MonoBehaviour
         if(nearestWayPoint != null)
             currentWayPoint = nearestWayPoint;
 
-        // 人物随当前路径点所在物体移动而移动
-        transform.parent = currentWayPoint?.parent;
+        // 人物随当前路径点所在物体移动而移动 且切换图层（面板上按奇数设置SortingLayer，然后将人物SortingLayer设置到当前物体SortingLayer + 1上）
+        transform.parent = currentWayPoint?.parent?.parent;
+        SpriteRenderer targetSr = transform.parent.GetComponent<SpriteRenderer>();
+        if (targetSr.sortingLayerID == defaultSortingLayerID)
+            sr.sortingOrder = targetSr.sortingOrder + 1;
+        else
+            sr.sortingOrder = defaultSortingOrder;
     }
 
     /// <summary>

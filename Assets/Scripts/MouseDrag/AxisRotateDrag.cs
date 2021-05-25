@@ -77,9 +77,4 @@ public class AxisRotateDrag : DraggingAction
         base.OnDragEnd();
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
     }
-
-    public void TestLog()
-    {
-        Debug.Log("这是一个帧事件");
-    }
 }
