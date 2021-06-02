@@ -89,7 +89,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 233955125
   m_SortingLayer: 2
-  m_SortingOrder: 5
+  m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 7778d7f7b767c584fa82a39addf86d4a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 6695753530257985129}
   - component: {fileID: 6695753530257985130}
   - component: {fileID: 6695753530257985131}
+  - component: {fileID: 1933268727}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -149,18 +150,17 @@ MonoBehaviour:
   isMoving: 0
   isClimbing: 0
   isAllowMove: 1
-  indicator: {fileID: 5734618834543457424, guid: 6e3df425f5049bc40aedae22232eea20,
-    type: 3}
   finalPath: []
   moveSpeed: 1
   checkRange: 0.5
-  indicatorHeight: 0.5
-  climbTime: 1
+  climbUpTime: 0
+  climbDownTime: 0
   ladderTime: 0
   dropTime: 0
   turnTime: 0
   animator: {fileID: 6695753529832915858}
-  climbAnimClip: {fileID: 7400000, guid: 2be723a81a281d642a51e5bf7d472283, type: 2}
+  climbUpAnimClip: {fileID: 7400000, guid: 2be723a81a281d642a51e5bf7d472283, type: 2}
+  climbDownAnimClip: {fileID: 7400000, guid: 6a1f37cd9d9a7264c98c3d907b38b953, type: 2}
   turnAnimClip: {fileID: 7400000, guid: 0f25dc7b93eb217449d81210e2eb2fe5, type: 2}
   firstStepAnimClip: {fileID: 7400000, guid: 06568519062fa594b9a793ed948fc9eb, type: 2}
 --- !u!61 &6695753530257985131
@@ -189,3 +189,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.450777, y: 1.0437434}
   m_EdgeRadius: 0
+--- !u!50 &1933268727
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6695753530257985128}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

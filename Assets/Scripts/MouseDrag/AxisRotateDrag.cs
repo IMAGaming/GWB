@@ -27,7 +27,8 @@ public class AxisRotateDrag : DraggingAction
         offsetLength = progressVec.magnitude;
         progressValue = 0f;
         // 设置动画进度 设置后动画自动暂停
-        animator = GetComponent<Animator>();
+        if(!animator)
+            animator = GetComponent<Animator>();
         animator.Play("Rotation", 0, progressValue);
         rotationClip = animator.runtimeAnimatorController.animationClips[0];
     }
@@ -59,6 +60,7 @@ public class AxisRotateDrag : DraggingAction
 
     public override void OnDragEnd()
     {
+        IsDragging = false;
         Invoke("DelayDrag", (1 - progressValue) * rotationClip.length);
         if (progressValue >= 0.5f)
         {
@@ -74,7 +76,8 @@ public class AxisRotateDrag : DraggingAction
 
     private void DelayDrag()
     {
-        base.OnDragEnd();
+        PlayerController.Instance.isAllowMove = true;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
+        EventCenter.GetInstance().EventTrigger(GameEvent.SendAxisDragEndProgress, progressValue);
     }
 }

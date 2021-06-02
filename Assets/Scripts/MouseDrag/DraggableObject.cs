@@ -11,7 +11,7 @@ public class DraggableObject : MonoBehaviour
     // 拖拽计时
     private float dragTimer = 0f;
     // 拖拽判断时间
-    private const float dragTime = .1f;
+    private const float dragTime = .25f;
 
     [SerializeField]private DraggingAction draggingAction;
 

@@ -9,8 +9,8 @@ using DG.Tweening;
 public class MoveDrag : DraggingAction
 {
     // Start和End对应拖动进度progress的0和1
-    public Vector2 offsetStart;
-    public Vector2 offsetEnd;
+    [SerializeField] private Transform offsetStart = default;
+    [SerializeField] private Transform offsetEnd = default;
 
     // 停止点，数量为0的话则在全部路径点选取最近的
     [SerializeField] private List<WayPoint> stopPoints = new List<WayPoint>();
@@ -32,7 +32,7 @@ public class MoveDrag : DraggingAction
     {
         cam = Camera.main;
         // 偏移相关变量
-        progressVec = offsetEnd - offsetStart;
+        progressVec = offsetEnd.position - offsetStart.position;
         offsetLength = progressVec.magnitude;
         // 位置设置
         dragStartPos = originPos = transform.position;
@@ -40,32 +40,22 @@ public class MoveDrag : DraggingAction
 
     private void OnDrawGizmos()
     {
-        if(Application.isPlaying)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(originPos + (Vector3)offsetStart, .1f);
-            Gizmos.DrawSphere(originPos + (Vector3)offsetEnd, .1f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position, .1f);
-        }
-        else // 使两个偏移点在未播放时被正确画出    
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(transform.position + (Vector3)offsetStart, .1f);
-            Gizmos.DrawSphere(transform.position + (Vector3)offsetEnd, .1f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position, .1f);
-        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(offsetStart.position, .1f);
+        Gizmos.DrawSphere(offsetEnd.position, .1f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.position, .1f);
     }
 
     public override void OnDragStart()
     {
         base.OnDragStart();
+        progressVec = offsetEnd.position - offsetStart.position;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         dragStartPos = transform.position;
         // 当前progress
-        progressValue = Vector2.Distance(dragStartPos,(Vector2)originPos + offsetStart) / offsetLength;
+        progressValue = Vector2.Distance(dragStartPos,offsetStart.position) / offsetLength;
     }
 
     public override void OnDragUpdate()
@@ -81,8 +71,8 @@ public class MoveDrag : DraggingAction
         else if (progressValue < 0)
             progressValue = 0;
 
-        Vector2 lerpResult = Vector2.Lerp(offsetStart, offsetEnd, progressValue);
-        Vector3 finalResult = new Vector3(originPos.x + lerpResult.x, originPos.y + lerpResult.y, originPos.z);
+        Vector2 lerpResult = Vector2.Lerp(offsetStart.position, offsetEnd.position, progressValue);
+        Vector3 finalResult = new Vector3(lerpResult.x, lerpResult.y, originPos.z);
         transform.position = finalResult;
         prevMousePos = curMousePos;
     }
@@ -98,7 +88,7 @@ public class MoveDrag : DraggingAction
         Vector3 targetPos = targetTsf ? targetTsf.position : dragStartPos;
         transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime).SetEase(easeType)
             .OnComplete(()=> { 
-                progressValue = Vector2.Distance(targetPos, (Vector2)originPos + offsetStart) / offsetLength;
+                progressValue = Vector2.Distance(targetPos, offsetStart.position) / offsetLength;
                 base.OnDragEnd();
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
             });

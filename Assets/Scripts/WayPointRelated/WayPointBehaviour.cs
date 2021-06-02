@@ -11,6 +11,11 @@ public abstract class WayPointBehaviour : MonoBehaviour
     // 封装成属性 保证外界获取到元素都是拷贝
     public static HashSet<WayPointBehaviour> Instances => new HashSet<WayPointBehaviour>(instances);
 
+    /// <summary>
+    /// 是否允许玩家行走的路径点
+    /// </summary>
+    public bool isWalk = true;
+
     protected virtual void Awake()
     {
         instances.Add(this);
@@ -32,7 +37,7 @@ public abstract class WayPointBehaviour : MonoBehaviour
         // X轴范围选取(LINQ)
         var xPosList =
             from wp in Instances
-            where Mathf.Abs(wp.transform.position.x - pos.x) <= 1.0f
+            where Mathf.Abs(wp.transform.position.x - pos.x) <= 1.0f && wp.isWalk
             select wp;
         // 高度判断，舍去高度与目标位置高度相差0.5以上的点
         var heightList =
