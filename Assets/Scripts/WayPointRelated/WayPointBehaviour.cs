@@ -16,6 +16,11 @@ public abstract class WayPointBehaviour : MonoBehaviour
     /// </summary>
     public bool isWalk = true;
 
+    /// <summary>
+    /// 是否允许玩家鼠标点击检测到的路径点
+    /// </summary>
+    public bool isCheck = true;
+
     protected virtual void Awake()
     {
         instances.Add(this);
@@ -37,7 +42,7 @@ public abstract class WayPointBehaviour : MonoBehaviour
         // X轴范围选取(LINQ)
         var xPosList =
             from wp in Instances
-            where Mathf.Abs(wp.transform.position.x - pos.x) <= 1.0f && wp.isWalk
+            where Mathf.Abs(wp.transform.position.x - pos.x) <= 1.0f && wp.isCheck
             select wp;
         // 高度判断，舍去高度与目标位置高度相差0.5以上的点
         var heightList =

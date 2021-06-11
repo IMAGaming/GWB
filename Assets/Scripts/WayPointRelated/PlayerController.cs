@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, StopMoving);
+        EventCenter.GetInstance().AddEventListener(GameEvent.StopPlayerMoving, StopMoving);
 
         cam = Camera.main;
         spriteTsf = transform.Find("Sprite");
@@ -285,7 +286,6 @@ public class PlayerController : MonoBehaviour
         if (!isMoving)
         {
             isMoving = true;
-            isFirstStep = true;
         }
 
         if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人站姿")
@@ -408,9 +408,8 @@ public class PlayerController : MonoBehaviour
             // Normal：根据距离处理移动时间
             float distance = Vector2.Distance(curPos, nextPos);
 
-            movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z),distance / moveSpeed).SetEase(Ease.Linear)
-                .OnStart(()=> CheckFlip(nextPos))
-                .OnComplete(() => Debug.LogFormat("OnComplete:{0}",Time.time)));
+            movingSequence.Append(transform.DOMove(new Vector3(nextPos.x, nextPos.y, transform.position.z), distance / moveSpeed).SetEase(Ease.Linear)
+                .OnStart(() => CheckFlip(nextPos)));
 
             curPos = nextPos;
         }
@@ -423,7 +422,6 @@ public class PlayerController : MonoBehaviour
     private bool checkOnce = false;
     private float climbUpCountDown = 0f;
     private float climbDownCountDown = 0f;
-    private bool isFirstStep = true;
     private void FixedUpdate()
     {
         if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("爬上"))
@@ -461,7 +459,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 停止人物移动状态与动画
-    private void StopMoving()
+    public void StopMoving()
     {
         movingSequence.Kill();
         isMoving = false;

@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 6695753530257985130}
   - component: {fileID: 6695753530257985131}
   - component: {fileID: 1933268727}
+  - component: {fileID: 1812279597}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -153,11 +154,6 @@ MonoBehaviour:
   finalPath: []
   moveSpeed: 1
   checkRange: 0.5
-  climbUpTime: 0
-  climbDownTime: 0
-  ladderTime: 0
-  dropTime: 0
-  turnTime: 0
   animator: {fileID: 6695753529832915858}
   climbUpAnimClip: {fileID: 7400000, guid: 2be723a81a281d642a51e5bf7d472283, type: 2}
   climbDownAnimClip: {fileID: 7400000, guid: 6a1f37cd9d9a7264c98c3d907b38b953, type: 2}
@@ -210,3 +206,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1812279597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6695753530257985128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5fbd44a9e110ad429b668f17ed08e56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsPick: 0

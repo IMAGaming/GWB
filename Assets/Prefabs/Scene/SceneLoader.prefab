@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_Ani: {fileID: 5784549821132415888}
-  blackDuration: 1.5
+  blackDuration: 2
 --- !u!1 &5784549821924357208
 GameObject:
   m_ObjectHideFlags: 0

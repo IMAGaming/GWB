@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using System;
 
 public class AxisRotateDrag : DraggingAction
@@ -18,6 +19,8 @@ public class AxisRotateDrag : DraggingAction
     private Vector2 progressVec; // 保存
     private Vector2 curMousePos; // 当前帧鼠标位置
     private Vector2 prevMousePos; // 上一帧鼠标位置
+
+    [SerializeField] private UnityEvent DragEndEvent = default;
 
     private void Start()
     {
@@ -79,5 +82,8 @@ public class AxisRotateDrag : DraggingAction
         PlayerController.Instance.isAllowMove = true;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
         EventCenter.GetInstance().EventTrigger(GameEvent.SendAxisDragEndProgress, progressValue);
+        // 当动画结束时调用事件方法
+        if (DragEndEvent != null && Mathf.Abs(progressValue - 1f) <= 0.01f)
+            DragEndEvent.Invoke();
     }
 }

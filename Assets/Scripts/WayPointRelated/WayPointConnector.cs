@@ -9,6 +9,7 @@ public class WayPointConnector : MonoBehaviour
     {
         WayPathUpdate();
         EventCenter.GetInstance().AddEventListener(GameEvent.OnDragEnd, WayPathUpdate);
+        EventCenter.GetInstance().AddEventListener(GameEvent.WayPathUpdate, WayPathUpdate);
     }
 
     /// <summary>

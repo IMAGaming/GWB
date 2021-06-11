@@ -18,10 +18,17 @@ public class CircleRotateDrag : DraggingAction
     private Vector3 originRotation;
 
     [System.Serializable]
+    private class MyFloatEvent : UnityEvent<float>
+    {
+
+    }
+
+    [System.Serializable]
     private class DegreeEvent
     {
-        public float degree = default;
-        public UnityEvent toRaise = default;
+        [Range(-180f,180f)] public float degree = default;
+        public bool isActive = false;
+        public MyFloatEvent toRaise = default;
     }
 
     private void Start()
@@ -33,6 +40,7 @@ public class CircleRotateDrag : DraggingAction
     public override void OnDragStart()
     {
         base.OnDragStart();
+        EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         rotateVec = startVec = centerPos - curMousePos;
         originRotation = transform.eulerAngles;
@@ -68,10 +76,24 @@ public class CircleRotateDrag : DraggingAction
         targetRotation = new Vector3(0, 0, eventList[index].degree);
         transform.DORotate(targetRotation, recoverTime).SetEase(Ease.OutBack)
             .OnComplete(() => {
-                eventList[index].toRaise?.Invoke();
+                if(eventList[index].isActive)
+                    eventList[index].toRaise?.Invoke(eventList[index].degree);
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
                 originRotation = transform.eulerAngles;
                 PlayerController.Instance.isAllowMove = true;
             });
+    }
+
+    public void SetEventActive(float degree)
+    {
+        for (int i = 0; i < eventList.Count; ++i)
+        {
+            if(Mathf.Abs(eventList[i].degree - degree) <= 0.01f)
+            {
+                eventList[i].isActive = true;
+                return;
+            }
+        }
+        Debug.LogErrorFormat("{0}脚本上找不到角度为{1}的触发事件", this.name, degree);
     }
 }
