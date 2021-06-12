@@ -28,15 +28,12 @@ public class SymbolPick : MonoBehaviour
         animSeq = DOTween.Sequence();
         animSeq.Pause();
 
-        Tween t1 = GetComponent<SpriteRenderer>().DOFade(0f, fadeDuration)
-            .OnComplete(() =>
-            {
-
-            });
+        Tween t1 = GetComponent<SpriteRenderer>().DOFade(0f, fadeDuration);
         animSeq.Append(t1);
 
-        Tween t2 = transform.DOMoveY(transform.localPosition.y + yOffset, fadeDuration);
-        animSeq.Join(t2);
+        Tween t2 = transform.DOMoveY(transform.position.y + yOffset, fadeDuration)
+            .OnComplete(() => Debug.Log("YOffsetFadeOut Complete"));
+        animSeq.Insert(0f, t2);
 
         float myFloat = 0f;
         Tween t4 = DOTween.To(() => myFloat, x => myFloat = x, 0f, 0f);
@@ -47,16 +44,20 @@ public class SymbolPick : MonoBehaviour
             .OnStart(() =>
                 {
                     nextSymbol.SetActive(true);
-                    nextSymbol.transform.localPosition = new Vector3(nextSymbol.transform.localPosition.x,
-                    nextSymbol.transform.localPosition.y - yOffset,
-                    nextSymbol.transform.localPosition.z);
+                    nextSymbol.transform.position = new Vector3(nextSymbol.transform.position.x,
+                    nextSymbol.transform.position.y - yOffset,
+                    nextSymbol.transform.position.z);
                 });
             animSeq.Join(t4);
-            t5 = nextSymbol.transform.DOMoveY(nextSymbol.transform.position.y, fadeDuration);
+            // 延迟0.1s 在t4对Y值赋值后再完成动画
+            t5 = nextSymbol.transform.DOMoveY(nextSymbol.transform.position.y, fadeDuration - 0.1f);
             animSeq.Join(t5);
+            Tween t6 = nextSymbol.GetComponent<SpriteRenderer>().material.DOFade(1f, fadeDuration);
+            animSeq.Join(t6);
         }
 
-        Tween t3 = target.DOFade(1f, fadeDuration);
+        Tween t3 = target.DOFade(1f, fadeDuration)
+            .OnStart(() => target.gameObject.SetActive(true));
         animSeq.Append(t3);
     }
 
@@ -66,6 +67,7 @@ public class SymbolPick : MonoBehaviour
         {
             for(int i = 0; i < targetDegrees.Length; ++i)
                 circleRotateDrag.SetEventActive(targetDegrees[i]);
+            animSeq.Goto(0f);
             animSeq.Play();
             Debug.Log("OnPick" + target.name);
         }

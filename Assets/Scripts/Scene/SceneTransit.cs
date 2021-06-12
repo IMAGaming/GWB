@@ -3,22 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
-public class SceneTransit : MonoBehaviour
+public class SceneTransit : MonoSingleton<SceneTransit>
 {
-    public static SceneTransit Instance;
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = (SceneTransit)this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     [SerializeField] private Animator UI_Ani = default;
     [Tooltip("黑幕时间")] [SerializeField] private float blackDuration = 0.5f;
@@ -29,17 +17,17 @@ public class SceneTransit : MonoBehaviour
         cam = Camera.main.transform;
     }
 
-    void Update()
-    {
-        //StartCoroutine(switchScene());
-    }
-
+    /// <summary>
+    /// 关卡内切换画面
+    /// </summary>
+    /// <param name="camPos">相机位置</param>
+    /// <param name="playerPos">人物目标位置</param>
     public void SwitchSceneCoroutine(Vector3 camPos, Vector3 playerPos)
     {
         StartCoroutine(SwitchScene(camPos, playerPos));
     }
 
-    IEnumerator SwitchScene(Vector3 camPos, Vector3 playerPos)
+    private IEnumerator SwitchScene(Vector3 camPos, Vector3 playerPos)
     {
         //播放动画
         UI_Ani.SetTrigger("fadeOut");
@@ -57,5 +45,28 @@ public class SceneTransit : MonoBehaviour
         UI_Ani.SetTrigger("fadeIn");
     }
 
+    /// <summary>
+    /// 真正的切换场景
+    /// </summary>
+    /// <param name="name">场景名字</param>
+    /// <param name="action">回调函数</param>
+    public void RealSwitchSceneCoroutine(string name, UnityAction action)
+    {
+        StartCoroutine(RealSwitchScene(name, action));
+    }
+
+    private IEnumerator RealSwitchScene(string name, UnityAction action)
+    {
+        UI_Ani.SetTrigger("fadeOut");
+
+        // 等动画播完
+        yield return new WaitForSeconds(blackDuration);
+
+        SceneMgr.GetInstance().LoadScene(name, action);
+
+        yield return new WaitForSeconds(0.1f);
+
+        UI_Ani.SetTrigger("fadeIn");
+    }
 
 }

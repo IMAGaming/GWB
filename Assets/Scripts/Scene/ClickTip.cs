@@ -21,7 +21,7 @@ public class ClickTip : MonoBehaviour
 
         if(pc.CheckWalkable(targetWayPointPos) == true && pc.isAllowMove && !pc.isClimbing)
         {
-            pc.WalkCoroutine(targetWayPointPos, 1f);
+            pc.WalkCoroutine(targetWayPointPos, 2f);
             SceneTransit.Instance.SwitchSceneCoroutine(targetCameraPos.position, finalWayPointPos.position);
         }
     }
