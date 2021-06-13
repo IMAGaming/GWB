@@ -5,9 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
+public enum TargetScene { SELECT = -1, LEVEL0, LEVEL1, LEVEL2, LEVEL3 }
+
 public class SceneTransit : MonoSingleton<SceneTransit>
 {
-
     [SerializeField] private Animator UI_Ani = default;
     [Tooltip("黑幕时间")] [SerializeField] private float blackDuration = 0.5f;
     private Transform cam;
@@ -29,6 +30,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
 
     private IEnumerator SwitchScene(Vector3 camPos, Vector3 playerPos)
     {
+        // 防止切场景后报空引用
+        cam = Camera.main.transform;
+
         //播放动画
         UI_Ani.SetTrigger("fadeOut");
 
@@ -50,9 +54,32 @@ public class SceneTransit : MonoSingleton<SceneTransit>
     /// </summary>
     /// <param name="name">场景名字</param>
     /// <param name="action">回调函数</param>
-    public void RealSwitchSceneCoroutine(string name, UnityAction action)
+    public void RealSwitchSceneCoroutine(int scene)
     {
-        StartCoroutine(RealSwitchScene(name, action));
+        UnityAction action = null;
+        string sceneName = "";
+        switch((TargetScene)scene)
+        {
+            // TODO：完成对选关场景的下一关布尔值设置和关卡名设置
+            case TargetScene.SELECT:
+                break;            
+            case TargetScene.LEVEL0:
+                sceneName = "Level_0";
+                break;            
+            case TargetScene.LEVEL1:
+                sceneName = "Level_1";
+                break;            
+            case TargetScene.LEVEL2:
+                sceneName = "Level_2";
+                break;
+            case TargetScene.LEVEL3:
+                sceneName = "Level_3";
+                break;
+            default:
+                break;
+        }
+
+        StartCoroutine(RealSwitchScene(sceneName, action));
     }
 
     private IEnumerator RealSwitchScene(string name, UnityAction action)

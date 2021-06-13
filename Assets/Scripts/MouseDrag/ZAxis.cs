@@ -18,6 +18,12 @@ public class ZAxis : MonoBehaviour
         EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, ZStart);
         EventCenter.GetInstance().AddEventListener<float>(GameEvent.SendAxisDragEndProgress, ZEnd);
     }
+
+    private void OnDestroy()
+    {
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragStart, ZStart);
+        EventCenter.GetInstance().RemoveEventListener<float>(GameEvent.SendAxisDragEndProgress, ZEnd);
+    }
     private void Start()
     {
         if (targetObjects == null)

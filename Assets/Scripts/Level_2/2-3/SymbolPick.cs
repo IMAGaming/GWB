@@ -31,8 +31,7 @@ public class SymbolPick : MonoBehaviour
         Tween t1 = GetComponent<SpriteRenderer>().DOFade(0f, fadeDuration);
         animSeq.Append(t1);
 
-        Tween t2 = transform.DOMoveY(transform.position.y + yOffset, fadeDuration)
-            .OnComplete(() => Debug.Log("YOffsetFadeOut Complete"));
+        Tween t2 = transform.DOMoveY(transform.position.y + yOffset, fadeDuration);
         animSeq.Insert(0f, t2);
 
         float myFloat = 0f;
@@ -69,7 +68,6 @@ public class SymbolPick : MonoBehaviour
                 circleRotateDrag.SetEventActive(targetDegrees[i]);
             animSeq.Goto(0f);
             animSeq.Play();
-            Debug.Log("OnPick" + target.name);
         }
     }
 }

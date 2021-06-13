@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(Instance);
+            Instance = (PlayerController)this;
         }
     }
     #endregion
@@ -60,12 +61,6 @@ public class PlayerController : MonoBehaviour
     private int defaultSortingLayerID;
     private int defaultSortingOrder;
 
-    // 字符串Hash ID
-    private int walkBoolHash;
-    private int ladderBoolHash;
-    private int climbUpBoolHash;
-    private int climbDownBoolHash;
-
     private SpriteRenderer sr;
     private Transform spriteTsf;
     private Vector3 afterClimbPos;
@@ -91,16 +86,16 @@ public class PlayerController : MonoBehaviour
         defaultSortingLayerID = sr.sortingLayerID;
         defaultSortingOrder = sr.sortingOrder;
 
-        // 生成字符串ID
-        walkBoolHash = Animator.StringToHash("Walk");
-        ladderBoolHash = Animator.StringToHash("Ladder");
-        climbUpBoolHash = Animator.StringToHash("ClimbUp");
-        climbDownBoolHash = Animator.StringToHash("ClimbDown");
-
         climbUpTime = climbUpAnimClip.length;
         climbDownTime = climbDownAnimClip.length;
         turnTime = turnAnimClip.length  + firstStepAnimClip.length;
         // TODO: ladderTime dropTime
+    }
+
+    private void OnDestroy()
+    {
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragStart, StopMoving);
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.StopPlayerMoving, StopMoving);
     }
 
     private void Update()
@@ -284,7 +279,7 @@ public class PlayerController : MonoBehaviour
     private void FollowPath()
     {
         movingSequence = DOTween.Sequence();
-        animator.SetBool(walkBoolHash, true);
+        animator.SetBool("Walk", true);
 
         if (!isMoving)
         {
@@ -293,7 +288,7 @@ public class PlayerController : MonoBehaviour
 
         if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人站姿")
         || animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转身执行动作")
-        || animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转回站姿"))
+        /*|| animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转回站姿") */)
         {
             float timeCount = 0f;
             movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, turnTime, turnTime)
@@ -338,11 +333,11 @@ public class PlayerController : MonoBehaviour
                         switch (thisPathType)
                         {
                             case WayPath.PathType.ClimbUp:
-                                animator.SetBool(climbUpBoolHash, true);
+                                animator.SetBool("ClimbUp", true);
                                 animator.Play("爬上", 0);
                                 break;
                             case WayPath.PathType.ClimbDown:
-                                animator.SetBool(climbDownBoolHash, true);
+                                animator.SetBool("ClimbDown", true);
                                 animator.Play("爬下", 0);
                                 break;
                         }
@@ -388,7 +383,7 @@ public class PlayerController : MonoBehaviour
                 .OnStart(() =>
                 {
                     CheckFlip(nextPos);
-                    animator.SetBool(ladderBoolHash, false);
+                    animator.SetBool("Ladder", false);
                 }));
             }
             else if(thisPathType == WayPath.PathType.LadderDown || thisPathType == WayPath.PathType.LadderUp)
@@ -397,12 +392,12 @@ public class PlayerController : MonoBehaviour
                 .OnStart(() =>
                 {
                     CheckFlip(nextPos);
-                    animator.SetBool(ladderBoolHash, true);
+                    animator.SetBool("Ladder", true);
                     isAllowMove = false;
                 })
                 .OnComplete(() => 
                 {
-                animator.SetBool(ladderBoolHash, false);
+                animator.SetBool("Ladder", false);
                     isAllowMove = true;
                 }));
             }
@@ -443,10 +438,6 @@ public class PlayerController : MonoBehaviour
             transform.position = new Vector3(afterClimbPos.x, afterClimbPos.y, transform.position.z);
             isClimbing = false;
         }
-        if(animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("爬梯"))
-        {
-
-        }
     }
 
     // 清空路径
@@ -464,8 +455,8 @@ public class PlayerController : MonoBehaviour
     {
         movingSequence.Kill();
         isMoving = false;
-        animator.SetBool(walkBoolHash, false);
-        animator.SetBool(ladderBoolHash, false);
+        animator.SetBool("Walk", false);
+        animator.SetBool("Ladder", false);
     }
 
     private void CheckFlip(Vector3 toward)
@@ -508,5 +499,11 @@ public class PlayerController : MonoBehaviour
         StopMoving();
         ClearPath();
         isAllowMove = true;
+    }
+
+    public void SetPlayerMovingAllowState(bool state)
+    {
+        StopMoving();
+        isAllowMove = state;
     }
 }

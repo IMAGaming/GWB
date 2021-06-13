@@ -13,7 +13,8 @@ public class SceneMgr : Singleton<SceneMgr>
         SceneManager.LoadScene(name);
         EventCenter.GetInstance().EventTrigger("LoadScene");
         //加载完成过后才会执行func
-        func();
+        if(func != null)
+            func();
     }
     public void LoadSceneAsyn(string name, UnityAction func) {
         //公共Mono模块
@@ -28,6 +29,7 @@ public class SceneMgr : Singleton<SceneMgr>
             yield return ao.progress;
         }
         //加载完成后执行func
-        func();
+        if(func != null)
+            func();
     }
 }

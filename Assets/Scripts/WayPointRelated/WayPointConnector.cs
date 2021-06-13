@@ -12,6 +12,11 @@ public class WayPointConnector : MonoBehaviour
         EventCenter.GetInstance().AddEventListener(GameEvent.WayPathUpdate, WayPathUpdate);
     }
 
+    private void OnDestroy()
+    {
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragEnd, WayPathUpdate);
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.WayPathUpdate, WayPathUpdate);
+    }
     /// <summary>
     /// 待连接路径点
     /// </summary>
