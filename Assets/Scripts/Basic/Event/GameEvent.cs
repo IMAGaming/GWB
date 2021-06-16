@@ -12,7 +12,6 @@ public class GameEvent : Singleton<GameEvent>
 
     // 单参数事件
     public const string ModifyMovingLock = "ModifyMovingLock";
-    public const string SendAxisDragEndProgress = "SendDragEndProgress";
 
     // 双参数事件
 

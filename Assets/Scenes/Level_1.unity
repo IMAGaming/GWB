@@ -1055,6 +1055,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 1502332024}
   animator: {fileID: 49842063}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -4870,7 +4871,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &278921308
 PrefabInstance:
@@ -5610,6 +5611,7 @@ MonoBehaviour:
   targetWayPoints:
   - {fileID: 288077761}
   - {fileID: 26781402}
+  dragging: {fileID: 632135507}
 --- !u!1 &318902629
 GameObject:
   m_ObjectHideFlags: 0
@@ -6184,6 +6186,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 535593146}
   animator: {fileID: 343134072}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -10975,7 +10978,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 621994368}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1302283933}
@@ -11334,6 +11337,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 139818482}
   animator: {fileID: 303199254}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -13249,7 +13253,7 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
+            m_IntArgument: 4
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17008,6 +17012,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 222197120}
   animator: {fileID: 934044794}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -17891,7 +17896,7 @@ PrefabInstance:
     - target: {fileID: 5784549821177443542, guid: 26c6a3212380d0c45892d170db92d5c0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5784549821177443542, guid: 26c6a3212380d0c45892d170db92d5c0,
         type: 3}
@@ -22765,12 +22770,12 @@ PrefabInstance:
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.42
+      value: -7.4
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.04
+      value: -3.05
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
@@ -26665,7 +26670,7 @@ PrefabInstance:
     - target: {fileID: 1232194640609775669, guid: cd9ea43aef84ba34d9b90590634d90bc,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1232194640609775669, guid: cd9ea43aef84ba34d9b90590634d90bc,
         type: 3}
@@ -34722,6 +34727,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 627917895}
   animator: {fileID: 1986209349}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -35224,6 +35230,7 @@ MonoBehaviour:
   offsetEnd: {fileID: 2090236995}
   animator: {fileID: 2025175856}
   rotationClip: {fileID: 0}
+  progressValue: 0
   DragEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -37339,7 +37346,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2116763168 stripped
 MonoBehaviour:

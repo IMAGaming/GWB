@@ -14,7 +14,7 @@ public class AxisRotateDrag : DraggingAction
     [SerializeField] private AnimationClip rotationClip = default;
 
     private Camera cam;
-    private float progressValue; // 当前progress值 拖动时即时更新
+    [HideInInspector] public float progressValue; // 当前progress值 拖动时即时更新
     private float offsetLength;
     private Vector2 progressVec; // 保存
     private Vector2 curMousePos; // 当前帧鼠标位置
@@ -81,7 +81,6 @@ public class AxisRotateDrag : DraggingAction
     {
         PlayerController.Instance.isAllowMove = true;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
-        EventCenter.GetInstance().EventTrigger(GameEvent.SendAxisDragEndProgress, progressValue);
         // 当动画结束时调用事件方法
         if (DragEndEvent != null && Mathf.Abs(progressValue - 1f) <= 0.01f)
             DragEndEvent.Invoke();

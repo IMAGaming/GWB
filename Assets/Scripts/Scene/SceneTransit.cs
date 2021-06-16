@@ -5,17 +5,32 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-public enum TargetScene { SELECT = -1, LEVEL0, LEVEL1, LEVEL2, LEVEL3 }
+public enum TargetScene { OPEN = 0, LEVEL0 = 1, LEVEL1, LEVEL2, SELECT }
 
 public class SceneTransit : MonoSingleton<SceneTransit>
 {
     [SerializeField] private Animator UI_Ani = default;
     [Tooltip("黑幕时间")] [SerializeField] private float blackDuration = 0.5f;
     private Transform cam;
+    public TargetScene currentScene;
+    public GameObject selectUI = default;
 
     private void Start()
     {
         cam = Camera.main.transform;
+        currentScene = (TargetScene)SceneManager.GetActiveScene().buildIndex;
+    }
+
+    // 开启选关图片
+    public void OpenSelectUI()
+    {
+        selectUI.SetActive(true);
+    }
+
+    // 关闭选关图片
+    public void CloseSelectUI()
+    {
+        selectUI.SetActive(false);
     }
 
     /// <summary>
@@ -50,10 +65,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
     }
 
     /// <summary>
-    /// 真正的切换场景
+    /// 真正的切场景 切回选关场景
     /// </summary>
-    /// <param name="name">场景名字</param>
-    /// <param name="action">回调函数</param>
+    /// <param name="scene"></param>
     public void RealSwitchSceneCoroutine(int scene)
     {
         UnityAction action = null;
@@ -62,6 +76,7 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         {
             // TODO：完成对选关场景的下一关布尔值设置和关卡名设置
             case TargetScene.SELECT:
+                sceneName = "Select";
                 break;            
             case TargetScene.LEVEL0:
                 sceneName = "Level_0";
@@ -71,9 +86,6 @@ public class SceneTransit : MonoSingleton<SceneTransit>
                 break;            
             case TargetScene.LEVEL2:
                 sceneName = "Level_2";
-                break;
-            case TargetScene.LEVEL3:
-                sceneName = "Level_3";
                 break;
             default:
                 break;
@@ -94,6 +106,11 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         yield return new WaitForSeconds(0.1f);
 
         UI_Ani.SetTrigger("fadeIn");
+
+        yield return new WaitForSeconds(blackDuration);
+
+        currentScene = (TargetScene)SceneManager.GetActiveScene().buildIndex;
+        CloseSelectUI();
     }
 
 }

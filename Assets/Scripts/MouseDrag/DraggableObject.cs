@@ -40,7 +40,6 @@ public class DraggableObject : MonoBehaviour
             draggingAction.OnDragStart();
         }
 
-        // 这里逻辑有点小问题
         if(DraggingAction.IsDragging)
         {
             draggingAction.OnDragUpdate();

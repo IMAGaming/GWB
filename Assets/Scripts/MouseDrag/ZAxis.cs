@@ -12,18 +12,21 @@ public class ZAxis : MonoBehaviour
 
     [Header("WayPoint ZAxis Configuration")]
     [Tooltip("目标路径点")] [SerializeField] private List<Transform> targetWayPoints = default;
+    [Header("Target DraggingAction")]
+    [Tooltip("拖拽对象")] [SerializeField] private AxisRotateDrag dragging = default;
 
     private void Awake()
     {
         EventCenter.GetInstance().AddEventListener(GameEvent.OnDragStart, ZStart);
-        EventCenter.GetInstance().AddEventListener<float>(GameEvent.SendAxisDragEndProgress, ZEnd);
+        EventCenter.GetInstance().AddEventListener(GameEvent.OnDragEnd, ZEnd);
     }
 
     private void OnDestroy()
     {
         EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragStart, ZStart);
-        EventCenter.GetInstance().RemoveEventListener<float>(GameEvent.SendAxisDragEndProgress, ZEnd);
+        EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragEnd, ZEnd);
     }
+
     private void Start()
     {
         if (targetObjects == null)
@@ -52,8 +55,9 @@ public class ZAxis : MonoBehaviour
         }
     }
 
-    private void ZEnd(float progress)
+    private void ZEnd()
     {
+        float progress = dragging.progressValue;
         if(Mathf.Approximately(progress,0))
         {
             for (int i = 0; i < targetObjects.Count; ++i)
