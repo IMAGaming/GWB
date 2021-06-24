@@ -85,4 +85,28 @@ public class AxisRotateDrag : DraggingAction
         if (DragEndEvent != null && Mathf.Abs(progressValue - 1f) <= 0.01f)
             DragEndEvent.Invoke();
     }
+
+    /// <summary>
+    /// 正放动画
+    /// </summary>
+    public void PlayAnimation()
+    {
+        OnDragStart();
+        OnDragEnd();
+        animator.SetFloat("PlaySpeed", 1f);
+        progressValue = 1f;
+        EventCenter.GetInstance().EventTrigger(GameEvent.WayPathUpdate);
+    }
+
+    /// <summary>
+    /// 倒放动画
+    /// </summary>
+    public void PlayBackAnimation()
+    {
+        OnDragStart();
+        OnDragEnd();
+        animator.SetFloat("PlaySpeed", -1f);
+        progressValue = 0f;
+        EventCenter.GetInstance().EventTrigger(GameEvent.WayPathUpdate);
+    }
 }

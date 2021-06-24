@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
-public enum TargetScene { OPEN = 0, LEVEL0 = 1, LEVEL1, LEVEL2, SELECT }
+public enum TargetScene { OPEN = 0, LEVEL0 = 1, LEVEL1, LEVEL2, LEVEL3, SELECT }
 
 public class SceneTransit : MonoSingleton<SceneTransit>
 {
@@ -87,6 +87,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
             case TargetScene.LEVEL2:
                 sceneName = "Level_2";
                 break;
+            case TargetScene.LEVEL3:
+                sceneName = "Level_3";
+                break;
             default:
                 break;
         }
@@ -111,6 +114,8 @@ public class SceneTransit : MonoSingleton<SceneTransit>
 
         currentScene = (TargetScene)SceneManager.GetActiveScene().buildIndex;
         CloseSelectUI();
+
+        MusicMgr.Instance.PlayBGM();
     }
 
 }

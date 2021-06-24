@@ -8,14 +8,16 @@ using DG.Tweening;
 /// </summary>
 public class MoveDrag : DraggingAction
 {
+    // 是否播放推动音效
+    [SerializeField] private bool isPlayPushAudio = false;
     // Start和End对应拖动进度progress的0和1
     [SerializeField] private Transform offsetStart = default;
     [SerializeField] private Transform offsetEnd = default;
 
     // 停止点，数量为0的话则在全部路径点选取最近的
-    [SerializeField] private List<WayPoint> stopPoints = new List<WayPoint>();
+    [SerializeField] private List<Transform> stopPoints = new List<Transform>();
     // 动画恢复时间
-    [SerializeField] private float recoverTime = 1f;
+    [SerializeField] private float recoverSpeed = 3f;
     // 缓动类型
     [SerializeField] private Ease easeType = DOTween.defaultEaseType;
 
@@ -27,6 +29,8 @@ public class MoveDrag : DraggingAction
     private Vector2 progressVec; // 保存
     private Vector2 curMousePos; // 当前帧鼠标位置
     private Vector2 prevMousePos; // 上一帧鼠标位置
+
+    private Tween slideTween = null;
 
     private void Start()
     {
@@ -50,12 +54,18 @@ public class MoveDrag : DraggingAction
     public override void OnDragStart()
     {
         base.OnDragStart();
+        slideTween?.Kill();
         progressVec = offsetEnd.position - offsetStart.position;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         dragStartPos = transform.position;
         // 当前progress
         progressValue = Vector2.Distance(dragStartPos,offsetStart.position) / offsetLength;
+        // 播放音效
+        if (isPlayPushAudio)
+        {
+            MusicMgr.Instance.PlaySound(MusicMgr.Instance.pushMusic, true);
+        }
     }
 
     public override void OnDragUpdate()
@@ -82,15 +92,36 @@ public class MoveDrag : DraggingAction
         // 滑动嵌入 动画结束后设置progress
         Transform targetTsf;
         if (stopPoints.Count != 0)
-            targetTsf = WayPointBehaviour.FindCloestWayPoint(stopPoints, transform.position);
+        {
+            //targetTsf = WayPointBehaviour.FindCloestWayPoint(stopPoints, transform.position);
+            targetTsf = stopPoints[0];
+            float minDistance = Vector2.Distance(targetTsf.position, transform.position);
+            foreach (Transform tsf in stopPoints)
+            {
+                float dis = Vector2.Distance(tsf.transform.position, transform.position);
+                if (dis <= minDistance)
+                {
+                    targetTsf = tsf.transform;
+                    minDistance = dis;
+                }
+            }
+        }
         else
+        {
             targetTsf = WayPointBehaviour.FindClosestWayPoint(transform.position);
+        }
         Vector3 targetPos = targetTsf ? targetTsf.position : dragStartPos;
-        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), recoverTime).SetEase(easeType)
+        float distance = Vector2.Distance(transform.position, targetPos);
+        slideTween = transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), distance / recoverSpeed).SetEase(easeType)
             .OnComplete(()=> { 
                 progressValue = Vector2.Distance(targetPos, offsetStart.position) / offsetLength;
                 base.OnDragEnd();
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
+                // 播放音效
+                if (isPlayPushAudio)
+                {
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.pushMusic, true);
+                }
             });
     }
 }

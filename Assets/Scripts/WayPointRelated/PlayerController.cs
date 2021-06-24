@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
         CheckPointDown();
 
         // 攀爬状态与正在拖动时无法移动
-        if(Input.GetMouseButtonUp(0) && !isClimbing && isAllowMove)
+        if(Input.GetMouseButtonUp(1) && !isClimbing && isAllowMove)
         {
             //indicator.GetComponentInChildren<ParticleSystem>().Stop();
 
@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
 
             // 获取边信息，存入finalPath<WayPath>
             finalPath.Add(prev.GetComponent<WayPoint>().neighbors.Find(
-                x => x.target.transform == pathWayPoint));
+                x => x.target.transform == pathWayPoint && x.isActive == true));
 
             if (prev != null)
                 pathWayPoint = prev;
@@ -462,10 +462,31 @@ public class PlayerController : MonoBehaviour
     private void CheckFlip(Vector3 toward)
     {
         Vector3 r = transform.rotation.eulerAngles;
+        // 旋转Y值
         if(Mathf.Approximately(r.y, 180f) || Mathf.Approximately(r.y, -180f))
-            sr.flipX = (toward - transform.position).x < 0 ? false : true;
+        {
+            // 旋转Z值
+            if(r.z >= 0f && r.z <= 90f || r.z >= 270f && r.z <= 360f)
+            {
+                sr.flipX = (toward - transform.position).x < 0 ? false : true;
+            }
+            else
+            {
+                sr.flipX = (toward - transform.position).x < 0 ? true : false;
+            }
+        }
         else
-            sr.flipX = (toward - transform.position).x < 0 ? true : false;
+        {
+            // 旋转Z值
+            if (r.z >= 0f && r.z <= 90f || r.z >= 270f && r.z <= 360f)
+            {
+                sr.flipX = (toward - transform.position).x < 0 ? true : false;
+            }
+            else
+            {
+                sr.flipX = (toward - transform.position).x < 0 ? false : true;
+            }
+        }
     }
 
     // 人物行走

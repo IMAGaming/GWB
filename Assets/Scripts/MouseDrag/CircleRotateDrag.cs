@@ -6,16 +6,21 @@ using DG.Tweening;
 
 public class CircleRotateDrag : DraggingAction
 {
-    [SerializeField] private Vector2 centerPos = default;
-    [SerializeField] private List<DegreeEvent> eventList = default;
+    // 音频碰撞器
+    [SerializeField] private AudioCollider audioCollider = default;
     // 动画恢复时间
     [SerializeField] private float recoverTime = 1f;
+
+    [SerializeField] private Vector2 centerPos = default;
+    [SerializeField] private List<DegreeEvent> eventList = default;
 
     private Camera cam;
     private Vector2 startVec;
     private Vector2 rotateVec;
     private Vector2 curMousePos;
     private Vector3 originRotation;
+
+    private Tween slideTween = null;
 
     [System.Serializable]
     private class MyFloatEvent : UnityEvent<float>
@@ -40,10 +45,18 @@ public class CircleRotateDrag : DraggingAction
     public override void OnDragStart()
     {
         base.OnDragStart();
+        slideTween?.Kill();
+        // 中心点更改
+        centerPos = transform.position;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         rotateVec = startVec = centerPos - curMousePos;
         originRotation = transform.eulerAngles;
+        // 开启音频碰撞器
+        if(audioCollider != null)
+        {
+            audioCollider.collider.enabled = true;
+        }
     }
 
     public override void OnDragUpdate()
@@ -74,13 +87,18 @@ public class CircleRotateDrag : DraggingAction
             }
         }
         targetRotation = new Vector3(0, 0, eventList[index].degree);
-        transform.DORotate(targetRotation, recoverTime).SetEase(Ease.OutBack)
+        slideTween = transform.DORotate(targetRotation, recoverTime).SetEase(Ease.OutBack)
             .OnComplete(() => {
                 if(eventList[index].isActive)
                     eventList[index].toRaise?.Invoke(eventList[index].degree);
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
                 originRotation = transform.eulerAngles;
                 PlayerController.Instance.isAllowMove = true;
+                // 关闭音频碰撞器
+                if(audioCollider != null)
+                {
+                    audioCollider.collider.enabled = false;
+                }
             });
     }
 

@@ -152,7 +152,7 @@ MonoBehaviour:
   isClimbing: 0
   isAllowMove: 1
   finalPath: []
-  moveSpeed: 1
+  moveSpeed: 1.4
   checkRange: 0.5
   animator: {fileID: 6695753529832915858}
   climbUpAnimClip: {fileID: 7400000, guid: 2be723a81a281d642a51e5bf7d472283, type: 2}

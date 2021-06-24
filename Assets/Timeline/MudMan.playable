@@ -25,6 +25,24 @@ MonoBehaviour:
     m_Objects:
     - {fileID: 272798964016482019}
     - {fileID: -715003283480936814}
+    - {fileID: -5070071597103749902}
+    - {fileID: -427671945830741471}
+--- !u!114 &-5070071597103749902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
+  m_Name: Signal Emitter
+  m_EditorClassIdentifier: 
+  m_Time: 1.4666666666666666
+  m_Retroactive: 0
+  m_EmitOnce: 0
+  m_Asset: {fileID: 11400000, guid: 346c5168ac8e29b44ad101e941425831, type: 2}
 --- !u!114 &-715003283480936814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -37,10 +55,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
   m_Name: Signal Emitter
   m_EditorClassIdentifier: 
-  m_Time: 6.433333333333334
+  m_Time: 3.0166666666666666
   m_Retroactive: 0
   m_EmitOnce: 0
   m_Asset: {fileID: 11400000, guid: 82e651b15dcde97409df74c3afad89f3, type: 2}
+--- !u!114 &-427671945830741471
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
+  m_Name: Signal Emitter
+  m_EditorClassIdentifier: 
+  m_Time: 3.0166666666666666
+  m_Retroactive: 0
+  m_EmitOnce: 0
+  m_Asset: {fileID: 11400000, guid: 4e8c6074e1a499d46b524eb64d1e7245, type: 2}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
   m_Name: Signal Emitter
   m_EditorClassIdentifier: 
-  m_Time: 2.2666666666666666
+  m_Time: 1.4666666666666666
   m_Retroactive: 0
   m_EmitOnce: 0
   m_Asset: {fileID: 11400000, guid: 76182be66ffbac94a93613784fea7dfa, type: 2}
@@ -93,7 +127,7 @@ MonoBehaviour:
     characterName: "\u6CE5\u5316\u4EBA"
     dialogueLine: "\u201C\u90A3\u4F4D\u5927\u4EBA\u8D60\u4E0E\u6211\u7684\u7BAB\u5462......\u201D"
     characterHead: {fileID: 21300000, guid: 3025d6d703d34d64987e2b7170dc9922, type: 3}
-    requirePause: 0
+    requirePause: 1
 --- !u!114 &6521492628139671983
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -116,10 +150,10 @@ MonoBehaviour:
   m_Children: []
   m_Clips:
   - m_Version: 1
-    m_Start: 2.0833333333333335
+    m_Start: 1.4666666666666666
     m_ClipIn: 0
     m_Asset: {fileID: 1936857136678959394}
-    m_Duration: 4.35
+    m_Duration: 1.5166666666666666
     m_TimeScale: 1
     m_ParentTrack: {fileID: 6521492628139671983}
     m_EaseInDuration: 0

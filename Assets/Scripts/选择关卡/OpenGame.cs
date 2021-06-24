@@ -8,7 +8,7 @@ public class OpenGame : MonoBehaviour
 
     private void OnMouseDown()
     {
-        SceneTransit.Instance.RealSwitchSceneCoroutine((int)TargetScene.SELECT);
+        GameObject.Find("VideoPlayer").GetComponent<CGPlayer>().PlayCG();
     }
 
 }

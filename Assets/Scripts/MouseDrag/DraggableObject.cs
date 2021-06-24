@@ -11,9 +11,11 @@ public class DraggableObject : MonoBehaviour
     // 拖拽计时
     private float dragTimer = 0f;
     // 拖拽判断时间
-    private const float dragTime = .25f;
+    private const float dragTime = .01f;
 
     [SerializeField]private DraggingAction draggingAction;
+
+    private bool isThisDragging = false;
 
     private void Awake()
     {
@@ -21,11 +23,6 @@ public class DraggableObject : MonoBehaviour
             draggingAction = GetComponent<DraggingAction>();
         if (draggingAction == null)
             Debug.LogErrorFormat("{0}没有绑定DraggingAction组件", gameObject.name);
-    }
-
-    private void OnMouseDown()
-    {
-
     }
 
     // OnMouseDown先于OnMouseDrag执行
@@ -38,9 +35,10 @@ public class DraggableObject : MonoBehaviour
         if (DraggingAction.IsDragging == false && dragTimer >= dragTime)
         {
             draggingAction.OnDragStart();
+            isThisDragging = true;
         }
 
-        if(DraggingAction.IsDragging)
+        if (isThisDragging)
         {
             draggingAction.OnDragUpdate();
         }
@@ -48,8 +46,11 @@ public class DraggableObject : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if(DraggingAction.IsDragging)
+        if (isThisDragging)
+        {
             draggingAction.OnDragEnd();
+            isThisDragging = false;
+        }
         dragTimer = 0f;
     }
 

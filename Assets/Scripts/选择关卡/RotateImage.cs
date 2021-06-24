@@ -304,6 +304,7 @@ public class RotateImage : MonoBehaviour
                 {
                     if (hitInfo.collider.gameObject.tag == "关卡图")
                     {
+                        MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic, false);
                         SceneTransit.Instance.OpenSelectUI();
                         SceneTransit.Instance.RealSwitchSceneCoroutine(sceneNumber);
                     }

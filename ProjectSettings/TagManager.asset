@@ -5,6 +5,21 @@ TagManager:
   serializedVersion: 2
   tags:
   - WayPoint
+  - "\u949F1"
+  - "\u949F4"
+  - "\u949F3"
+  - "\u80CC\u666F"
+  - "\u80CC\u666F2"
+  - "\u949F5"
+  - "\u949F2"
+  - "\u641C\u5BFB\u524D"
+  - UI_Image
+  - "\u641C\u5BFB\u540E"
+  - DraggableObject
+  - "\u5173\u5361\u56FE"
+  - "\u524D"
+  - "\u540E"
+  - AudioTrigger
   layers:
   - Default
   - TransparentFX

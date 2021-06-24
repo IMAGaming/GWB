@@ -16,8 +16,10 @@ public class SymbolPick : MonoBehaviour
     [SerializeField] private GameObject nextSymbol = default;
     // 图案在圆盘上对应度数，用于开启事件
     [Range(-180f, 180f)] [SerializeField] private float[] targetDegrees = default;
-    // 消失时间
+    // 淡出时间
     [SerializeField] private float fadeDuration = 1f;
+    // 淡入时间
+    [SerializeField] private float fadeInDuration = 1f;
     // 纵向位移
     [SerializeField] private float yOffset = .2f;
 
@@ -55,7 +57,7 @@ public class SymbolPick : MonoBehaviour
             animSeq.Join(t6);
         }
 
-        Tween t3 = target.DOFade(1f, fadeDuration)
+        Tween t3 = target.DOFade(1f, fadeInDuration)
             .OnStart(() => target.gameObject.SetActive(true));
         animSeq.Append(t3);
     }

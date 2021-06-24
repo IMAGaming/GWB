@@ -17,17 +17,24 @@ public class WayPointConnector : MonoBehaviour
         EventCenter.GetInstance().RemoveEventListener(GameEvent.OnDragEnd, WayPathUpdate);
         EventCenter.GetInstance().RemoveEventListener(GameEvent.WayPathUpdate, WayPathUpdate);
     }
+
+    /// <summary>
+    /// 多种条件对应同个连接的情况，为了防止部分条件成立部分条件不成立而造成连接失败的情况
+    /// </summary>
+    [Tooltip("多条件同连接")] [SerializeField] private bool multiConditionsSameConnection = false;
+
     /// <summary>
     /// 待连接路径点
     /// </summary>
-    [SerializeField]
-    private List<WayPointConnection> connections = default;
+    [SerializeField] private List<WayPointConnection> connections = default;
 
     /// <summary>
     /// 动画结束后判断路径更新
     /// </summary>
     public void WayPathUpdate()
     {
+        // 多条件同连接情况的设置结果
+        bool mcsc_result = false;
         foreach (WayPointConnection connection in connections)
         {
             // 判断条件成立数：所有物体位置符合即条件成立
@@ -40,15 +47,27 @@ public class WayPointConnector : MonoBehaviour
                 }
             }
             bool isActive = (conditionCount == connection.conditions.Count);
+            // 位或
+            mcsc_result = mcsc_result | isActive;
             // 更新每一个已配置的连接，若连接不存在则新增，若连接存在则根据条件判断结果连通/关闭
             foreach (ConnectPath cp in connection.connectPaths)
             {
                 WayPath foundPath = cp.wayPoint.neighbors.Find(x => x.Equals(cp.wayPath));
                 if (foundPath != null)
+                {
                     foundPath.isActive = isActive;
+                    if(multiConditionsSameConnection)
+                    {
+                        foundPath.isActive = mcsc_result;
+                    }
+                }
                 else
                 {
                     cp.wayPath.isActive = isActive;
+                    if (multiConditionsSameConnection)
+                    {
+                        cp.wayPath.isActive = mcsc_result;
+                    }
                     cp.wayPoint.neighbors.Add(cp.wayPath);
                 }
             }

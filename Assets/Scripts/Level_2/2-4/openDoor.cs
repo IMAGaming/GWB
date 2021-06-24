@@ -85,6 +85,7 @@ public class openDoor : MonoBehaviour
                     Debug.Log("这是钟1");
                     // 敲钟时玩家不允许行动
                     EventCenter.GetInstance().EventTrigger(GameEvent.StopPlayerMoving);
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clockMusic[0], false);
                     PlayerController.Instance.isAllowMove = false;
                     keyList.Add(5);
                     StartCoroutine(clockPoolMgr(fake1,father1,"List1","1"));
@@ -94,6 +95,7 @@ public class openDoor : MonoBehaviour
                     Debug.Log("这是钟2");
                     // 敲钟时玩家不允许行动
                     EventCenter.GetInstance().EventTrigger(GameEvent.StopPlayerMoving);
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clockMusic[1], false);
                     PlayerController.Instance.isAllowMove = false;
                     keyList.Add(4);
                     StartCoroutine(clockPoolMgr(fake2, father2, "List2","2"));
@@ -103,6 +105,7 @@ public class openDoor : MonoBehaviour
                     Debug.Log("这是钟3");
                     // 敲钟时玩家不允许行动
                     EventCenter.GetInstance().EventTrigger(GameEvent.StopPlayerMoving);
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clockMusic[2], false);
                     PlayerController.Instance.isAllowMove = false;
                     keyList.Add(3);
                     StartCoroutine(clockPoolMgr(fake3, father3, "List3", "3"));
@@ -113,6 +116,7 @@ public class openDoor : MonoBehaviour
                     Debug.Log("这是钟4");
                     // 敲钟时玩家不允许行动
                     EventCenter.GetInstance().EventTrigger(GameEvent.StopPlayerMoving);
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clockMusic[3], false);
                     PlayerController.Instance.isAllowMove = false;
                     keyList.Add(2);
                     StartCoroutine(clockPoolMgr(fake4, father4, "List4", "5"));
@@ -123,6 +127,7 @@ public class openDoor : MonoBehaviour
                     Debug.Log("这是钟5");
                     // 敲钟时玩家不允许行动
                     EventCenter.GetInstance().EventTrigger(GameEvent.StopPlayerMoving);
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clockMusic[4], false);
                     PlayerController.Instance.isAllowMove = false;
                     keyList.Add(1);
                     StartCoroutine(clockPoolMgr(fake5, father5, "List5", "5"));

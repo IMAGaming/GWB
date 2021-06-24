@@ -252,9 +252,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_Ani: {fileID: 5784549821132415888}
-  selectUI: {fileID: 0}
   blackDuration: 2
   currentScene: 0
+  selectUI: {fileID: 1711607597}
 --- !u!1 &5784549821924357208
 GameObject:
   m_ObjectHideFlags: 0
