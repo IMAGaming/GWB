@@ -28,7 +28,7 @@ public class ClickParticle : MonoBehaviour
             Vector2 pos = cam.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(pos.x, pos.y, -5f);
             particle.Play();
-            MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic,false);
+            //MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic,false);
         }
 
         if(Input.GetMouseButtonDown(0))

@@ -40,6 +40,7 @@ public class CGPlayer : MonoBehaviour
             return;
         }
 
+        rawImage.gameObject.SetActive(true);
         rawImage.texture = videoPlayer.texture;
         videoPlayer.Play();
     }

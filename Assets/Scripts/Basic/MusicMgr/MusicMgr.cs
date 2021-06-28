@@ -53,6 +53,11 @@ public class MusicMgr : MonoSingleton<MusicMgr>
                 bgmSource.Play();
                 bgmSource.loop = true;
                 break;
+            case TargetScene.LEVEL3:
+                bgmSource.clip = level_Music[4];
+                bgmSource.Play();
+                bgmSource.loop = true;
+                break;
             case TargetScene.SELECT:
                 StopBGM();
                 break;

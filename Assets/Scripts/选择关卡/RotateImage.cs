@@ -40,12 +40,14 @@ public class RotateImage : MonoBehaviour
     public Animator animBG2;
 
     public int sceneNumber;
-    //public int repeatNumber;
+    public int repeatNumber;
     public GameObject uiSwitchSceneImage;
     public GameObject SwitchSceneImage0;
     public GameObject SwitchSceneImage1;
     public GameObject SwitchSceneImage2;
     public GameObject SwitchSceneImage3;
+
+    private bool isChoose = false;
 
     Vector3 standardPoint = new Vector3(0, 0, 180);
     Vector3 secondPoint = new Vector3(0, 0, 180);
@@ -71,7 +73,7 @@ public class RotateImage : MonoBehaviour
     void Start()
     {
         isStop = true;//在一开始的时候把isStop设为true，这样第一次点击按钮，也会换图片
-        //repeatNumber = -1;
+        repeatNumber = sceneNumber;
         uiSwitchSceneImage = SceneTransit.Instance.selectUI;
     }
 
@@ -107,9 +109,11 @@ public class RotateImage : MonoBehaviour
 
     }*/
 
-    public void StartRotate()
+    public void StartRotate(int Number)
     {
-        //if(repeatNumber != sceneNumber)
+        if(isStop == true)
+        sceneNumber = Number;
+        if(repeatNumber != sceneNumber)
         isRotate = true;
     }
 
@@ -132,7 +136,8 @@ public class RotateImage : MonoBehaviour
                 isChapter1End = false;
                 isChapter2End = false;
                 isChapter3End = false;
-                //repeatNumber = sceneNumber;
+                repeatNumber = sceneNumber; //停下来的时候，让repeatNumber指向当前的场景数字
+                this.transform.eulerAngles = standardPoint;
             }                       
         }    
     }
@@ -141,7 +146,7 @@ public class RotateImage : MonoBehaviour
     {
         //countingNumber = countingNumber +1;
         //这样写就可以防止在旋转过程中计数了
-        if(isStop == true)
+        if(isStop == true && repeatNumber != sceneNumber)
         countingNumber++;
         Debug.Log(countingNumber);
 
@@ -157,8 +162,8 @@ public class RotateImage : MonoBehaviour
 
     public void SwitchImage(int Number)
     {
-        sceneNumber = Number;
-        if(isStop == true && countingNumber > 2) //第一次点击按钮或者在某一关时点击某一关时的按钮是否要切图片，可能也要关注这个if语句
+        //sceneNumber = Number;
+        if(isStop == true && countingNumber > 2 && repeatNumber != sceneNumber) //第一次点击按钮或者在某一关时点击某一关时的按钮是否要切图片，可能也要关注这个if语句
         {
             if (Mathf.Abs(Image1.transform.position.y + 9.51f) < 0.05 || Mathf.Abs(Image2.transform.position.y + 9.51f) < 0.05)
             {
@@ -274,13 +279,8 @@ public class RotateImage : MonoBehaviour
 
     public void ButtonClick()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            isChapter0End = true;
-            if (isChapter0End == true)
-                Button1.onClick.Invoke();
-        }
-
+        if (isChapter0End == true)
+            Button1.onClick.Invoke();
         if (isChapter1End == true)
             Button2.onClick.Invoke();
         if(isChapter2End == true)
@@ -291,7 +291,7 @@ public class RotateImage : MonoBehaviour
 
     public void ImageClick()
     {
-        if(isStop == true)
+        if(isStop == true && !isChoose)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -304,9 +304,10 @@ public class RotateImage : MonoBehaviour
                 {
                     if (hitInfo.collider.gameObject.tag == "关卡图")
                     {
-                        MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic, false);
+	                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic, false);
                         SceneTransit.Instance.OpenSelectUI();
                         SceneTransit.Instance.RealSwitchSceneCoroutine(sceneNumber);
+                        isChoose = true;
                     }
                 }
             }

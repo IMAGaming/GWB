@@ -503,6 +503,8 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator WalkAnimation(Transform target, float waitTime)
     {
+        // 检测当前路径点
+        CheckPointDown();
         // 停止人物移动
         StopMoving();
         ClearPath();

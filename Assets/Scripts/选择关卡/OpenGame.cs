@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class OpenGame : MonoBehaviour
 {
-
     private void OnMouseDown()
     {
-        GameObject.Find("VideoPlayer").GetComponent<CGPlayer>().PlayCG();
+        GameObject vp = GameObject.Find("VideoPlayer");
+        vp.GetComponent<CGPlayer>().PlayCG();
     }
 
 }

@@ -47,7 +47,7 @@ MonoBehaviour:
   template:
     characterName: "\u5973\u5A32"
     dialogueLine: "\u201C\u901A\u5F80\u5BFF\u6625\u4E4B\u68EE\u7684\u4F20\u9001\u95E8\u5728\u5C4B\u9876\u4E0A\u65B9\uFF0C\u5C1D\u8BD5\u79FB\u52A8\u7269\u4F53\u6765\u5BFB\u627E\u901A\u5F80\u7684\u9053\u8DEF\u5427\u3002\u201D"
-    characterHead: {fileID: 21300000, guid: 35001db643ad9ac4c9573a04002d9c09, type: 3}
+    characterHead: {fileID: 21300000, guid: e95ff1564d66c5845aa633c9703369ff, type: 3}
     requirePause: 1
 --- !u!114 &-1472551330081632227
 MonoBehaviour:
