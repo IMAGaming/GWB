@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2331063804221660134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2331063804221660135}
+  - component: {fileID: 2331063804221660132}
+  m_Layer: 0
+  m_Name: MusicMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2331063804221660135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331063804221660134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2331063804221660132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331063804221660134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f791d2e4fdc4942879371c54f20111, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openGameMusic: {fileID: 8300000, guid: 916994d6b2d1d024392689ce79b0d6e7, type: 3}
+  level_Music:
+  - {fileID: 8300000, guid: fb13ad2623cd247449908e1ef3261933, type: 3}
+  - {fileID: 8300000, guid: 9542ab7998c96f141a91162cbf44f661, type: 3}
+  - {fileID: 8300000, guid: 58a6a27fcaf9a634990cf89950d28f6d, type: 3}
+  - {fileID: 8300000, guid: baa37fd33fcea0b458f368662c36700f, type: 3}
+  - {fileID: 8300000, guid: fdb219d1ca5c8b847b6fab9248ffbf18, type: 3}
+  discMusic:
+  - {fileID: 8300000, guid: 177c20174027b734f96cb8e0cc6bf4b1, type: 3}
+  - {fileID: 8300000, guid: 5d4004e138eae61409de09443fa51ed1, type: 3}
+  - {fileID: 8300000, guid: ab1582326f4de0b45bf32638f051c406, type: 3}
+  - {fileID: 8300000, guid: 2770ae24793a0bb46b1af664b7844da8, type: 3}
+  - {fileID: 8300000, guid: 5b0d6fd3b334b6d4ca046cee741dccd9, type: 3}
+  - {fileID: 8300000, guid: daf7d31eb36abde4a94141391c0a2809, type: 3}
+  - {fileID: 8300000, guid: f267891c6447a6f48ac8939ed75bb2b4, type: 3}
+  - {fileID: 8300000, guid: 040f39f88fd5d4f4b87aa3b3ce23a508, type: 3}
+  clockMusic:
+  - {fileID: 8300000, guid: dbf24d906460fe7459a9a03b611b07f9, type: 3}
+  - {fileID: 8300000, guid: 32e00323205726844a5e1715821d620e, type: 3}
+  - {fileID: 8300000, guid: eccec842d051f4c43b3273e6be83de08, type: 3}
+  - {fileID: 8300000, guid: 1aa616c18afcf20469189f6c4b7ccc96, type: 3}
+  - {fileID: 8300000, guid: 0db243fa1cb14ee4a8e1ddd47d3105a1, type: 3}
+  windMusic: {fileID: 8300000, guid: 08ad05766fcf8f24493a9b2e13ca490f, type: 3}
+  pushMusic: {fileID: 8300000, guid: ac9cb59c40f8abb40a6ca6d2ac71b113, type: 3}
+  pickUpMusic: {fileID: 8300000, guid: b4da256b69650fe47a36c090fd35c98e, type: 3}
+  clickMusic: {fileID: 8300000, guid: 4c079518f95ea4c4286b629479453539, type: 3}
+  bgmSource: {fileID: 0}
+  interactiveSouce: {fileID: 0}

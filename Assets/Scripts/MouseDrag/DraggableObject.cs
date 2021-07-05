@@ -10,10 +10,12 @@ public class DraggableObject : MonoBehaviour
 {
     // 拖拽计时
     private float dragTimer = 0f;
-    private const float dragTime = .1f;
     // 拖拽判断时间
+    private const float dragTime = .01f;
+
     [SerializeField]private DraggingAction draggingAction;
-    public static bool IsDragging { get; private set; }
+
+    private bool isThisDragging = false;
 
     private void Awake()
     {
@@ -21,9 +23,8 @@ public class DraggableObject : MonoBehaviour
             draggingAction = GetComponent<DraggingAction>();
         if (draggingAction == null)
             Debug.LogErrorFormat("{0}没有绑定DraggingAction组件", gameObject.name);
-        IsDragging = false;
     }
-  
+
     // OnMouseDown先于OnMouseDrag执行
     private void OnMouseDrag()
     {
@@ -31,13 +32,13 @@ public class DraggableObject : MonoBehaviour
         if (PlayerController.Instance.isClimbing) return;
         // 拖拽判断计时
         dragTimer += Time.deltaTime;
-        if (IsDragging == false && dragTimer >= dragTime)
+        if (DraggingAction.IsDragging == false && dragTimer >= dragTime)
         {
             draggingAction.OnDragStart();
-            IsDragging = true;
+            isThisDragging = true;
         }
 
-        if(IsDragging)
+        if (isThisDragging)
         {
             draggingAction.OnDragUpdate();
         }
@@ -45,17 +46,12 @@ public class DraggableObject : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if(IsDragging)
+        if (isThisDragging)
         {
-            StartCoroutine(DelayToInvokeDo(() => { IsDragging = false; }, draggingAction.animTime));
             draggingAction.OnDragEnd();
+            isThisDragging = false;
         }
         dragTimer = 0f;
     }
 
-    private IEnumerator DelayToInvokeDo(Action action, float delaySeconds)
-    {
-        yield return new WaitForSeconds(delaySeconds);
-        action();
-    }
 }

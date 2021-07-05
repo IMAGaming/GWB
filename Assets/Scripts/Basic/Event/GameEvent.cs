@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameEvent 
+public class GameEvent : Singleton<GameEvent> 
 {
     // 无参事件
     public const string OnDragStart = "OnDragStart";
     public const string OnDragEnd = "OnDragEnd";
+    public const string StopPlayerMoving = "StopPlayerMoving";
+    public const string WayPathUpdate = "WayPathUpdate";
 
     // 单参数事件
     public const string ModifyMovingLock = "ModifyMovingLock";

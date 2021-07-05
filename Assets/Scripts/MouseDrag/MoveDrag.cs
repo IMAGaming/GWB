@@ -8,15 +8,21 @@ using DG.Tweening;
 /// </summary>
 public class MoveDrag : DraggingAction
 {
+    // 是否播放推动音效
+    [SerializeField] private bool isPlayPushAudio = false;
     // Start和End对应拖动进度progress的0和1
-    public Vector2 offsetStart;
-    public Vector2 offsetEnd;
+    [SerializeField] private Transform offsetStart = default;
+    [SerializeField] private Transform offsetEnd = default;
 
     // 停止点，数量为0的话则在全部路径点选取最近的
-    [SerializeField] private List<WayPoint> stopPoints = new List<WayPoint>();
+    [SerializeField] private List<Transform> stopPoints = new List<Transform>();
+    // 动画恢复时间
+    [SerializeField] private float recoverSpeed = 3f;
+    // 缓动类型
+    [SerializeField] private Ease easeType = DOTween.defaultEaseType;
 
     private Camera cam;
-    private float progressValue;
+    private float progressValue; // 当前progress值 拖动时即时更新
     private float offsetLength;
     private Vector3 dragStartPos; // 记录拖拽开始时的位置
     private Vector3 originPos; // 保存最开始未拖拽时的位置
@@ -24,11 +30,13 @@ public class MoveDrag : DraggingAction
     private Vector2 curMousePos; // 当前帧鼠标位置
     private Vector2 prevMousePos; // 上一帧鼠标位置
 
+    private Tween slideTween = null;
+
     private void Start()
     {
         cam = Camera.main;
         // 偏移相关变量
-        progressVec = offsetEnd - offsetStart;
+        progressVec = offsetEnd.position - offsetStart.position;
         offsetLength = progressVec.magnitude;
         // 位置设置
         dragStartPos = originPos = transform.position;
@@ -36,31 +44,28 @@ public class MoveDrag : DraggingAction
 
     private void OnDrawGizmos()
     {
-        if(Application.isPlaying)
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(originPos + (Vector3)offsetStart, .1f);
-            Gizmos.DrawSphere(originPos + (Vector3)offsetEnd, .1f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position, .1f);
-        }
-        else // 使两个偏移点在未播放时被正确画出    
-        {
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(transform.position + (Vector3)offsetStart, .1f);
-            Gizmos.DrawSphere(transform.position + (Vector3)offsetEnd, .1f);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position, .1f);
-        }
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(offsetStart.position, .1f);
+        Gizmos.DrawSphere(offsetEnd.position, .1f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(transform.position, .1f);
     }
 
     public override void OnDragStart()
     {
+        base.OnDragStart();
+        slideTween?.Kill();
+        progressVec = offsetEnd.position - offsetStart.position;
         EventCenter.GetInstance().EventTrigger(GameEvent.OnDragStart);
         prevMousePos = curMousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         dragStartPos = transform.position;
         // 当前progress
-        progressValue = Vector2.Distance(dragStartPos,(Vector2)originPos + offsetStart) / offsetLength;
+        progressValue = Vector2.Distance(dragStartPos,offsetStart.position) / offsetLength;
+        // 播放音效
+        if (isPlayPushAudio)
+        {
+            MusicMgr.Instance.PlaySound(MusicMgr.Instance.pushMusic, true);
+        }
     }
 
     public override void OnDragUpdate()
@@ -73,11 +78,11 @@ public class MoveDrag : DraggingAction
 
         if (progressValue > 1)
             progressValue = 1;
-        if (progressValue < 0)
+        else if (progressValue < 0)
             progressValue = 0;
 
-        Vector2 lerpResult = Vector2.Lerp(offsetStart, offsetEnd, progressValue);
-        Vector3 finalResult = new Vector3(originPos.x + lerpResult.x, originPos.y + lerpResult.y, originPos.z);
+        Vector2 lerpResult = Vector2.Lerp(offsetStart.position, offsetEnd.position, progressValue);
+        Vector3 finalResult = new Vector3(lerpResult.x, lerpResult.y, originPos.z);
         transform.position = finalResult;
         prevMousePos = curMousePos;
     }
@@ -87,15 +92,36 @@ public class MoveDrag : DraggingAction
         // 滑动嵌入 动画结束后设置progress
         Transform targetTsf;
         if (stopPoints.Count != 0)
-            targetTsf = WayPointBehaviour.FindCloestWayPoint(stopPoints, transform.position);
+        {
+            //targetTsf = WayPointBehaviour.FindCloestWayPoint(stopPoints, transform.position);
+            targetTsf = stopPoints[0];
+            float minDistance = Vector2.Distance(targetTsf.position, transform.position);
+            foreach (Transform tsf in stopPoints)
+            {
+                float dis = Vector2.Distance(tsf.transform.position, transform.position);
+                if (dis <= minDistance)
+                {
+                    targetTsf = tsf.transform;
+                    minDistance = dis;
+                }
+            }
+        }
         else
+        {
             targetTsf = WayPointBehaviour.FindClosestWayPoint(transform.position);
+        }
         Vector3 targetPos = targetTsf ? targetTsf.position : dragStartPos;
-        transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), animTime)
+        float distance = Vector2.Distance(transform.position, targetPos);
+        slideTween = transform.DOMove(new Vector3(targetPos.x,targetPos.y,transform.position.z), distance / recoverSpeed).SetEase(easeType)
             .OnComplete(()=> { 
-                progressValue = Vector2.Distance(targetPos, (Vector2)originPos + offsetStart) / offsetLength;
-                WayPathUpdate();
+                progressValue = Vector2.Distance(targetPos, offsetStart.position) / offsetLength;
+                base.OnDragEnd();
                 EventCenter.GetInstance().EventTrigger(GameEvent.OnDragEnd);
+                // 播放音效
+                if (isPlayPushAudio)
+                {
+                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.pushMusic, true);
+                }
             });
     }
 }
