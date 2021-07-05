@@ -47,9 +47,16 @@ public class HandleConMid : MonoBehaviour
         if(isClick == false)
         {
             if (collision.gameObject.name == "44")
+            {
                 isChoose4 = true;
+                isChoose6 = true;//新加的
+            }
             if (collision.gameObject.name == "66")
+            {
                 isChoose6 = true;
+                isChoose4 = true;//新加的
+            }
+                
         }
        
     }

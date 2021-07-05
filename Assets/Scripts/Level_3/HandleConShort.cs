@@ -49,9 +49,15 @@ public class HandleConShort : MonoBehaviour
         if(isClick == false)
         {
             if (collision.gameObject.name == "1")
+            {
                 isChoose1 = true;
+                isChoose3 = false;//新加的
+            }
             if (collision.gameObject.name == "3")
+            {
                 isChoose3 = true;
+                isChoose1 = false;//新加的
+            }
         }
        
     }

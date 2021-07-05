@@ -406,7 +406,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &504829864
 AudioSource:
@@ -652,7 +652,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1324634419
 RectTransform:
@@ -669,7 +669,7 @@ RectTransform:
   - {fileID: 1988336086}
   - {fileID: 1082298840}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -683,6 +683,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5784549821132415895, guid: 26c6a3212380d0c45892d170db92d5c0,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5784549821177443540, guid: 26c6a3212380d0c45892d170db92d5c0,
         type: 3}
       propertyPath: m_Name
@@ -726,7 +731,7 @@ PrefabInstance:
     - target: {fileID: 5784549821177443542, guid: 26c6a3212380d0c45892d170db92d5c0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5784549821177443542, guid: 26c6a3212380d0c45892d170db92d5c0,
         type: 3}
@@ -1236,7 +1241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.1999512, y: 2.2000122}
+  m_AnchoredPosition: {x: 2.2001953, y: 2.1999512}
   m_SizeDelta: {x: 1324.3132, y: 366.80627}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2136521362

@@ -15,21 +15,51 @@ public class PuzzleCon : MonoBehaviour
     void Start()
     {
         Key[0] = Handle[0].GetComponent<HandleCon>().isChoose2;
-        Key[1] = Handle[1].GetComponent<HandleCon>().isChoose5;
+        Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose5;
         Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose4;
-        Key[3] = Handle[3].GetComponent<HandleConMid>().isChoose6;
+        Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose6;
         Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose1;
-        Key[5] = Handle[5].GetComponent<HandleConShort>().isChoose3;
+        Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose3;
     }
     void Update()
     {
+        TheseAreShit();
         Decode();
-        Key[0] = Handle[0].GetComponent<HandleCon>().isChoose2;
-        Key[1] = Handle[1].GetComponent<HandleCon>().isChoose5;
-        Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose4;
-        Key[3] = Handle[3].GetComponent<HandleConMid>().isChoose6;
-        Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose1;
-        Key[5] = Handle[5].GetComponent<HandleConShort>().isChoose3;
+        
+    }
+
+    void TheseAreShit() //先堆点重复的，考完试再改成更好的写法，先实现
+    {
+        if (Handle[0].GetComponent<HandleCon>().isChoose2 == true)
+            Key[0] = Handle[0].GetComponent<HandleCon>().isChoose2;
+        else
+            Key[0] = Handle[0].GetComponent<HandleCon>().isChoose5;
+
+        if (Handle[1].GetComponent<HandleConLongR>().isChoose2 == true)
+            Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose2;
+        else
+            Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose5;
+
+        if (Handle[2].GetComponent<HandleConMid>().isChoose4 == true)
+            Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose4;
+        else
+            Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose6;
+
+        if (Handle[3].GetComponent<HandleConMidR>().isChoose4 == true)
+            Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose4;
+        else
+            Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose6;
+
+        if (Handle[4].GetComponent<HandleConShort>().isChoose1 == true)
+            Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose1;
+        else
+            Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose3;
+
+        if (Handle[5].GetComponent<HandleConShortR>().isChoose1 == true)
+            Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose1;
+        else
+            Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose3;
+
     }
     void Decode()
     {
@@ -40,11 +70,11 @@ public class PuzzleCon : MonoBehaviour
             isComplete = true;
             Invoke("SolveOut", 1.5f);
         }
+
     }
 
     void SolveOut()
     {
-        SceneTransit.Instance.SwitchSceneCoroutine(nextCamPos.position,nextPlayerPos.position);
+        SceneTransit.Instance.SwitchSceneCoroutine(nextCamPos.position, nextPlayerPos.position);
     }
-    
 }

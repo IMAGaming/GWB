@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandleCon : MonoBehaviour
+public class HandleConShortR : MonoBehaviour
 {
-
     [SerializeField]
     Transform handlePoint;
 
     Transform basePoint;
 
-    public bool isChoose2;
-    public bool isChoose5;
+    public bool isChoose1;
+    public bool isChoose3;
     public bool isClick;
 
     private void OnMouseDown()
@@ -36,6 +35,7 @@ public class HandleCon : MonoBehaviour
             transform.position.z);
 
         isClick = false;
+
     }
 
 
@@ -46,28 +46,26 @@ public class HandleCon : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(isClick == false)
+        if (isClick == false)
         {
-            if (collision.gameObject.name == "222")
+            if (collision.gameObject.name == "1")
             {
-                isChoose2 = true;
-                isChoose5 = false;
+                isChoose1 = true;
+                isChoose3 = false;//新加的
             }
-                
-            if (collision.gameObject.name == "555")
+            if (collision.gameObject.name == "3")
             {
-                isChoose5 = true;
-                isChoose2 = false;
+                isChoose3 = true;
+                isChoose1 = false;//新加的
             }
-                
         }
-        
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         handlePoint = basePoint;
-        isChoose2 = false;
-        isChoose5 = false;
+        isChoose1 = false;
+        isChoose3 = false;
     }
 }

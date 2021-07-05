@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandleCon : MonoBehaviour
+public class HandleConLongR : MonoBehaviour
 {
-
     [SerializeField]
     Transform handlePoint;
 
@@ -46,22 +45,22 @@ public class HandleCon : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(isClick == false)
+        if (isClick == false)
         {
             if (collision.gameObject.name == "222")
             {
                 isChoose2 = true;
                 isChoose5 = false;
             }
-                
+
             if (collision.gameObject.name == "555")
             {
                 isChoose5 = true;
                 isChoose2 = false;
             }
-                
+
         }
-        
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
