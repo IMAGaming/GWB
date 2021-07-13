@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RotateImage : MonoBehaviour
@@ -53,6 +54,12 @@ public class RotateImage : MonoBehaviour
     Vector3 secondPoint = new Vector3(0, 0, 180);
 
     private void Awake()
+    {
+        /* Invoke("RotateChapter", 1.2f);*/
+        RotateChapter();
+    }
+
+    private void RotateChapter()
     {
         switch (SceneTransit.Instance.currentScene)
         {
@@ -293,7 +300,8 @@ public class RotateImage : MonoBehaviour
     {
         if(isStop == true && !isChoose)
         {
-            if (Input.GetMouseButtonDown(0))
+            // Fixed: UI交互时会触发射线检测的Bug
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);

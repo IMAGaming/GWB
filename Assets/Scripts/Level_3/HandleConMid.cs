@@ -2,69 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandleConMid : MonoBehaviour
+public class HandleConMid : HandleCon
 {
-    [SerializeField]
-    Transform handlePoint;
-
-    Transform basePoint;
-
-    public bool isChoose4;
-    public bool isChoose6;
-    public bool isClick;
-
-    private void OnMouseDown()
-    {
-        basePoint = handlePoint;
-        isClick = true;
-    }
-
-    private void OnMouseDrag()
-    {
-        transform.position = new Vector3(
-            Camera.main.ScreenToWorldPoint(Input.mousePosition).x
-            , transform.position.y,
-            transform.position.z);
-    }
-
-    private void OnMouseUp()
-    {
-        transform.position = new Vector3(
-            handlePoint.position.x
-            , transform.position.y,
-            transform.position.z);
-
-        isClick = false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        handlePoint = collision.transform;
-    }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(isClick == false)
+
+        if (isClick == false)
         {
+            if (collision.gameObject.name == "11")
+            {
+                PuzzleCon.instance.Mid[0] = true;
+
+            }
+
+            if (collision.gameObject.name == "22")
+            {
+                PuzzleCon.instance.Mid[1] = true;
+
+            }
+
+            if (collision.gameObject.name == "33")
+            {
+                PuzzleCon.instance.Mid[2] = true;
+
+            }
             if (collision.gameObject.name == "44")
             {
-                isChoose4 = true;
-                isChoose6 = true;//新加的
+                PuzzleCon.instance.Mid[3] = true;
+
+
+            }
+            if (collision.gameObject.name == "55")
+            {
+                PuzzleCon.instance.Mid[4] = true;
+
             }
             if (collision.gameObject.name == "66")
             {
-                isChoose6 = true;
-                isChoose4 = true;//新加的
+                PuzzleCon.instance.Mid[5] = true;
+
             }
-                
+
         }
-       
+
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    protected override void OnTriggerExit2D(Collider2D collision)
     {
-        handlePoint = basePoint;
-        isChoose4 = false;
-        isChoose6 = false;
+        base.OnTriggerExit2D(collision);
+
+        for (int i = 0; i < 6; i++)
+        {
+            PuzzleCon.instance.Mid[i] = false;
+        }
+
     }
 }

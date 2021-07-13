@@ -5,13 +5,21 @@ using UnityEngine.Events;
 
 public class TriggerArea : MonoBehaviour
 {
+    [SerializeField] private bool isTriggerOnce = false;
+
     public UnityEvent triggerEvent;
     public UnityEvent triggerExitEvent;
+
+    private bool isTrigger = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
         {
+            if(isTriggerOnce && isTrigger)
+            {
+                return;
+            }
             triggerEvent?.Invoke();
         }
     }
@@ -21,6 +29,7 @@ public class TriggerArea : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             triggerExitEvent?.Invoke();
+            isTrigger = true;
         }
     }
 }

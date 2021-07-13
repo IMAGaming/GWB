@@ -5,10 +5,38 @@ using UnityEngine.SceneManagement;
 
 public class OpenGame : MonoBehaviour
 {
-    private void OnMouseDown()
+    private bool isPlay;
+    private GameObject videoPlayer;
+
+    private void Start()
     {
-        GameObject vp = GameObject.Find("VideoPlayer");
-        vp.GetComponent<CGPlayer>().PlayCG();
+        videoPlayer = GameObject.Find("VideoPlayer");
+        if (SceneTransit.Instance.currentScene == TargetScene.OPEN)
+        {
+            isPlay = true;
+        }
+        else
+        {
+            isPlay = false;
+        }
+    }
+
+    public void GameStart()
+    {
+        if(isPlay)
+        {
+            videoPlayer.GetComponent<CGPlayer>().PlayCG();
+        }
+        else
+        {
+            SceneTransit.Instance.RealSwitchSceneCoroutine((int)TargetScene.SELECT);
+        }
+    }
+
+    public void GameExit()
+    {
+        //UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
     }
 
 }

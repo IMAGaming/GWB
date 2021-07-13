@@ -6997,6 +6997,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 780380967, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1477476754}
+    - target: {fileID: 780380967, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TransitScene
+      objectReference: {fileID: 0}
     - target: {fileID: 1435552684, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -7013,7 +7021,7 @@ PrefabInstance:
     - target: {fileID: 5659963306977733792, guid: 11f23fb8521a8a145a42d310417f2aed,
         type: 3}
       propertyPath: m_Name
-      value: DialogueCanvas
+      value: UICanvas
       objectReference: {fileID: 0}
     - target: {fileID: 5659963306977733796, guid: 11f23fb8521a8a145a42d310417f2aed,
         type: 3}
@@ -11021,7 +11029,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 38.399998, y: 10.799999}
+    oldSize: {x: 38.4, y: 10.8}
     newSize: {x: 38.4, y: 10.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -15429,12 +15437,12 @@ PrefabInstance:
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -18.48
+      value: -17.88
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.07
+      value: -3.08
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}

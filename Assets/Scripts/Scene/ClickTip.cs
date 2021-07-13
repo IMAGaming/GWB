@@ -10,6 +10,12 @@ public class ClickTip : MonoBehaviour
     [SerializeField] private Transform finalWayPointPos = default;
     [SerializeField] private bool isCheckPickUp = false;
     private bool isClick = false;
+    private float intervalTime;
+
+    private void Start()
+    {
+        intervalTime = SceneTransit.Instance.blackDuration;
+    }
 
     private void OnMouseDown()
     {
@@ -25,7 +31,7 @@ public class ClickTip : MonoBehaviour
 
             if (pc.CheckWalkable(targetWayPointPos) == true && pc.isAllowMove && !pc.isClimbing)
             {
-                pc.WalkCoroutine(targetWayPointPos, 2f);
+                pc.WalkCoroutine(targetWayPointPos, intervalTime);
                 SceneTransit.Instance.SwitchSceneCoroutine(targetCameraPos.position, finalWayPointPos.position);
             }
         }

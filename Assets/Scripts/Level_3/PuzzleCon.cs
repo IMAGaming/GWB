@@ -4,72 +4,149 @@ using UnityEngine;
 
 public class PuzzleCon : MonoBehaviour
 {
-
+    public static PuzzleCon instance;
     public GameObject[] Handle;
     public Animator BG_Anim;
     public Transform nextCamPos;
     public Transform nextPlayerPos;
+
+    //public bool[] Key;
+    [Header("上部悬挂点")]
+    public bool[] Top;
+
+    [Header("中部悬挂点")]
+    public bool[] Mid;
+
+    [Header("下部悬挂点")]
+    public bool[] Bottom;
+
+    [Header("解谜列表")]
+    public List<int> Solution = new List<int>(); //配对的数字存进来
+
+    // 是否完成
     private bool isComplete = false;
 
-    public bool[] Key; 
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
-        Key[0] = Handle[0].GetComponent<HandleCon>().isChoose2;
-        Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose5;
-        Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose4;
-        Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose6;
-        Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose1;
-        Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose3;
+
+        Solution.Add(1);
+        Solution.Add(1);
+        Solution.Add(1);
+
     }
     void Update()
     {
-        TheseAreShit();
-        Decode();
-        
+        if (Solution.Count > 3)
+        {
+            Solution.Remove(Solution[0]);
+        }
+
+        CalculateTop();
+        CalculateMid();
+        CalculateBottom();
+        if(!isComplete)
+        {
+            Decode();
+        }
     }
 
-    void TheseAreShit() //先堆点重复的，考完试再改成更好的写法，先实现
+
+    //计算上部悬挂点的值
+    public void CalculateTop()
     {
-        if (Handle[0].GetComponent<HandleCon>().isChoose2 == true)
-            Key[0] = Handle[0].GetComponent<HandleCon>().isChoose2;
-        else
-            Key[0] = Handle[0].GetComponent<HandleCon>().isChoose5;
+        if (Top[0] == true && Top[2] == true)
+        {
+            int isChoose13 = 13;
+            Solution[0] = isChoose13;
+            //Solution.Add(isChoose13);
+        }
 
-        if (Handle[1].GetComponent<HandleConLongR>().isChoose2 == true)
-            Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose2;
-        else
-            Key[1] = Handle[1].GetComponent<HandleConLongR>().isChoose5;
+        if (Top[1] == true && Top[4] == true)
+        {
+            int isChoose25 = 25;
+            Solution[0] = isChoose25;
+            //Solution.Add(isChoose25);
+        }
 
-        if (Handle[2].GetComponent<HandleConMid>().isChoose4 == true)
-            Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose4;
-        else
-            Key[2] = Handle[2].GetComponent<HandleConMid>().isChoose6;
-
-        if (Handle[3].GetComponent<HandleConMidR>().isChoose4 == true)
-            Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose4;
-        else
-            Key[3] = Handle[3].GetComponent<HandleConMidR>().isChoose6;
-
-        if (Handle[4].GetComponent<HandleConShort>().isChoose1 == true)
-            Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose1;
-        else
-            Key[4] = Handle[4].GetComponent<HandleConShort>().isChoose3;
-
-        if (Handle[5].GetComponent<HandleConShortR>().isChoose1 == true)
-            Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose1;
-        else
-            Key[5] = Handle[5].GetComponent<HandleConShortR>().isChoose3;
-
+        if (Top[3] == true && Top[5] == true)
+        {
+            int isChoose46 = 46;
+            Solution[0] = isChoose46;
+            //Solution.Add(isChoose46);
+        }
     }
+
+    public void CalculateMid()
+    {
+        if (Mid[0] == true && Mid[2] == true)
+        {
+            int isChoose13 = 13;
+            Solution[1] = isChoose13;
+            //Solution.Add(isChoose13);
+        }
+
+        if (Mid[1] == true && Mid[4] == true)
+        {
+            int isChoose25 = 25;
+            Solution[1] = isChoose25;
+            //Solution.Add(isChoose25);
+        }
+
+        if (Mid[3] == true && Mid[5] == true)
+        {
+            int isChoose46 = 46;
+            Solution[1] = isChoose46;
+            //Solution.Add(isChoose46);
+        }
+    }
+
+    public void CalculateBottom()
+    {
+        if (Bottom[0] == true && Bottom[2] == true)
+        {
+            int isChoose13 = 13;
+            Solution[2] = isChoose13;
+            //Solution.Add(isChoose13);
+        }
+
+        if (Bottom[1] == true && Bottom[4] == true)
+        {
+            int isChoose25 = 25;
+            Solution[2] = isChoose25;
+            //Solution.Add(isChoose25);
+        }
+
+        if (Bottom[3] == true && Bottom[5] == true)
+        {
+            int isChoose46 = 46;
+            Solution[2] = isChoose46;
+            //Solution.Add(isChoose46);
+        }
+    }
+
+    //解开谜题的函数
     void Decode()
     {
-        if (Key[0] == true && Key[1] == true && Key[2] == true && Key[3] == true && Key[4] == true && Key[5] == true && !isComplete)
+        /*if (Key[0] == true && Key[1] == true && Key[2] == true && Key[3] == true && Key[4] == true && Key[5] == true)
         {
             Debug.Log("OK");
             BG_Anim.SetTrigger("SolveOut");
-            isComplete = true;
+        }*/
+
+        int answer = Solution[0] + Solution[1] + Solution[2];
+
+        if (answer == 84)
+        {
+            Debug.Log("OK");
+            BG_Anim.SetTrigger("SolveOut");
             Invoke("SolveOut", 1.5f);
+            isComplete = true;
         }
+
 
     }
 

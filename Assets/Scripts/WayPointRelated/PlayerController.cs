@@ -29,9 +29,7 @@ public class PlayerController : MonoBehaviour
     public bool isClimbing = false;
     public bool isAllowMove = true;
 
-    [Space]
-
-    private Transform currentWayPoint;
+    public Transform currentWayPoint { get; private set; }
     private Transform targetWayPoint;
     //[SerializeField]private Transform indicator = default;
 

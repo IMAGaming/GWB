@@ -3905,7 +3905,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &274417723
 Transform:
   m_ObjectHideFlags: 0
@@ -6245,6 +6245,12 @@ PrefabInstance:
       propertyPath: anim_RBottle
       value: 
       objectReference: {fileID: 1030678513}
+    - target: {fileID: 3241763219673642114, guid: 405445b7f11a3cd4c9b85bb35de9ad33,
+        type: 3}
+      propertyPath: item_UI
+      value: 
+      objectReference: {fileID: 21300000, guid: 32becddde3ba7a045a410c1e07cf31c9,
+        type: 3}
     - target: {fileID: 3241763219673642115, guid: 405445b7f11a3cd4c9b85bb35de9ad33,
         type: 3}
       propertyPath: m_Sprite
@@ -7606,7 +7612,7 @@ PrefabInstance:
         type: 3}
       propertyPath: targetClip
       value: 
-      objectReference: {fileID: 8300000, guid: ab1582326f4de0b45bf32638f051c406, type: 3}
+      objectReference: {fileID: 8300000, guid: 5b0d6fd3b334b6d4ca046cee741dccd9, type: 3}
     - target: {fileID: 8171297287624366386, guid: f88adad7406cb0941b108ae22b214161,
         type: 3}
       propertyPath: m_Name
@@ -10068,6 +10074,21 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1232194640609775671, guid: cd9ea43aef84ba34d9b90590634d90bc,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1232194640609775671, guid: cd9ea43aef84ba34d9b90590634d90bc,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 1232194640609775671, guid: cd9ea43aef84ba34d9b90590634d90bc,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd9ea43aef84ba34d9b90590634d90bc, type: 3}
 --- !u!95 &658596696 stripped
@@ -10220,6 +10241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d6ce7bb8c50a3242957d0f330f57d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTriggerOnce: 0
   triggerEvent:
     m_PersistentCalls:
       m_Calls:
@@ -17634,7 +17656,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 19.2, y: 19.83}
+  m_Size: {x: 19.2, y: 10.8}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -18027,7 +18049,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1234953684}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.5900002, y: -3.4, z: 0}
+  m_LocalPosition: {x: -1.5900002, y: -3.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 475261652}
@@ -19002,7 +19024,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 12.61, y: 12.61}
+  m_Size: {x: 12.65, y: 12.65}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -19997,12 +20019,12 @@ PrefabInstance:
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.57
+      value: -8.25
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.211
+      value: -4.21
       objectReference: {fileID: 0}
     - target: {fileID: 6695753530257985129, guid: 0eddd111d42fc814cbd85e1a5581f2dd,
         type: 3}
@@ -20671,6 +20693,7 @@ GameObject:
   - component: {fileID: 1413461248}
   - component: {fileID: 1413461249}
   - component: {fileID: 1413461251}
+  - component: {fileID: 1413461250}
   m_Layer: 0
   m_Name: "\u6247\u5B50"
   m_TagString: Untagged
@@ -20686,7 +20709,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413461247}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.92, z: 0}
+  m_LocalPosition: {x: 0, y: 2.919, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1295681964}
@@ -20742,6 +20765,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1413461250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413461247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9aa363ba8b737b44a880e752663d91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerOnce: 0
+  triggerEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 274417725}
+        m_MethodName: StartTimeline
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!61 &1413461251
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -20755,7 +20805,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.393358}
+  m_Offset: {x: 0, y: 0.25085592}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -20766,7 +20816,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.88, y: 1.8532844}
+  m_Size: {x: 2.88, y: 2.1382885}
   m_EdgeRadius: 0
 --- !u!1 &1420611839
 GameObject:
@@ -31403,6 +31453,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 780380967, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2072352172}
+    - target: {fileID: 780380967, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TransitScene
+      objectReference: {fileID: 0}
     - target: {fileID: 1435552684, guid: 11f23fb8521a8a145a42d310417f2aed, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -31415,7 +31473,7 @@ PrefabInstance:
     - target: {fileID: 5659963306977733792, guid: 11f23fb8521a8a145a42d310417f2aed,
         type: 3}
       propertyPath: m_Name
-      value: DialogueCanvas
+      value: UICanvas
       objectReference: {fileID: 0}
     - target: {fileID: 5659963306977733796, guid: 11f23fb8521a8a145a42d310417f2aed,
         type: 3}
