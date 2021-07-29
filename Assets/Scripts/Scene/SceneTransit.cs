@@ -74,7 +74,6 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         string sceneName = "";
         switch((TargetScene)scene)
         {
-            // TODO：完成对选关场景的下一关布尔值设置和关卡名设置
             case TargetScene.OPEN:
                 sceneName = "OpenGame";
                 break;

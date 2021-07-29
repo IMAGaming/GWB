@@ -48,20 +48,19 @@ public class RotateImage : MonoBehaviour
     public GameObject SwitchSceneImage2;
     public GameObject SwitchSceneImage3;
 
+    // Fixed：重复进入关卡
     private bool isChoose = false;
 
     Vector3 standardPoint = new Vector3(0, 0, 180);
     Vector3 secondPoint = new Vector3(0, 0, 180);
 
-    private void Awake()
-    {
-        /* Invoke("RotateChapter", 1.2f);*/
-        RotateChapter();
-    }
+    // 场景缓存
+    TargetScene loadScene = TargetScene.OPEN;
 
     private void RotateChapter()
     {
-        switch (SceneTransit.Instance.currentScene)
+        isStop = true;
+        switch (loadScene)
         {
             case TargetScene.LEVEL0:
                 isChapter1End = true;
@@ -72,16 +71,17 @@ public class RotateImage : MonoBehaviour
             case TargetScene.LEVEL2:
                 isChapter3End = true;
                 break;
-            default:
-                break;
         }
     }
 
     void Start()
     {
-        isStop = true;//在一开始的时候把isStop设为true，这样第一次点击按钮，也会换图片
+        //isStop = true;//在一开始的时候把isStop设为true，这样第一次点击按钮，也会换图片
+        isStop = false;
         repeatNumber = sceneNumber;
         uiSwitchSceneImage = SceneTransit.Instance.selectUI;
+        loadScene = SceneTransit.Instance.currentScene;
+        Invoke("RotateChapter", 1.2f);
     }
 
     void Update()
@@ -119,9 +119,13 @@ public class RotateImage : MonoBehaviour
     public void StartRotate(int Number)
     {
         if(isStop == true)
-        sceneNumber = Number;
+        {
+            sceneNumber = Number;
+        }
         if(repeatNumber != sceneNumber)
-        isRotate = true;
+        {
+            isRotate = true;
+        }
     }
 
     public void RotatePoint() //旋转点旋转
@@ -155,7 +159,7 @@ public class RotateImage : MonoBehaviour
         //这样写就可以防止在旋转过程中计数了
         if(isStop == true && repeatNumber != sceneNumber)
         countingNumber++;
-        Debug.Log(countingNumber);
+        //Debug.Log(countingNumber);
 
         if (countingNumber % 2 == 0)
         {
@@ -164,7 +168,7 @@ public class RotateImage : MonoBehaviour
         else
             standardPoint = new Vector3(0, 0, 180);
 
-        Debug.Log(standardPoint);
+        //Debug.Log(standardPoint);
     }
 
     public void SwitchImage(int Number)
@@ -287,13 +291,21 @@ public class RotateImage : MonoBehaviour
     public void ButtonClick()
     {
         if (isChapter0End == true)
+        {
             Button1.onClick.Invoke();
+        }
         if (isChapter1End == true)
+        {
             Button2.onClick.Invoke();
+        }
         if(isChapter2End == true)
+        {
             Button3.onClick.Invoke();
-        if(isChapter3End == true)
+        }
+        if (isChapter3End == true)
+        {
             Button4.onClick.Invoke();
+        }
     }
 
     public void ImageClick()
