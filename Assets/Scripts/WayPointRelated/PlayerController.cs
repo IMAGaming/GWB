@@ -284,16 +284,17 @@ public class PlayerController : MonoBehaviour
             isMoving = true;
         }
 
-        if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人站姿")
-        || animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转身执行动作")
-        /*|| animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转回站姿") */)
-        {
-            float timeCount = 0f;
-            movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, turnTime, turnTime)
-                .OnStart(() => CheckFlip(finalPath[finalPath.Count - 1].target.transform.position)));
-        }
+        // 转身等待部分
+        //if (animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人站姿")
+        //|| animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转身执行动作")
+        ///*|| animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).IsName("泥人转回站姿") */)
+        //{
+        //    float timeCount = 0f;
+        //    movingSequence.Append(DOTween.To(() => timeCount, x => timeCount = x, turnTime, turnTime)
+        //        .OnStart(() => CheckFlip(finalPath[finalPath.Count - 1].target.transform.position)));
+        //}
 
-        // 这里获取真实位置，在序列提前结束的情况下仍能维持同样的移动速度
+        // 获取真实位置，在序列提前结束的情况下仍能维持同样的移动速度
         Vector2 curPos = transform.position;
 
         for (int i = finalPath.Count - 1; i >= 0; --i)

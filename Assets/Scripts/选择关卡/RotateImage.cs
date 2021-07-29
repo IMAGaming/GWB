@@ -57,6 +57,7 @@ public class RotateImage : MonoBehaviour
     // 场景缓存
     TargetScene loadScene = TargetScene.OPEN;
 
+    // 若关卡通关后进入该场景，转动到下一关
     private void RotateChapter()
     {
         isStop = true;
@@ -81,6 +82,7 @@ public class RotateImage : MonoBehaviour
         repeatNumber = sceneNumber;
         uiSwitchSceneImage = SceneTransit.Instance.selectUI;
         loadScene = SceneTransit.Instance.currentScene;
+
         Invoke("RotateChapter", 1.2f);
     }
 
