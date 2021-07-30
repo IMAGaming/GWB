@@ -39,13 +39,16 @@ public class ButtonTip : MonoBehaviour
     // 根据解锁情况更改按钮颜色
     private void ButtonColorfy()
     {
-        // TODO：加判断是否解锁
         for(int i = 0; i < colorDic.Count; ++i)
         {
             Color targetColor;
             if(ColorUtility.TryParseHtmlString(colorDic[i], out targetColor))
             {
-                transform.Find("Button" + i).GetComponent<Image>().color = targetColor;
+                // 判断是否解锁
+                if(GameManager.instance.locks[i] == true)
+                {
+                    transform.Find("Button" + i).GetComponent<Image>().color = targetColor;
+                }
             }
         }
     }

@@ -12,7 +12,7 @@ public class SceneTransit : MonoSingleton<SceneTransit>
     [SerializeField] private Animator UI_Ani = default;
     [Tooltip("黑幕时间")] [SerializeField] public float blackDuration = 0.5f;
     private Transform cam;
-    public TargetScene currentScene;
+    public TargetScene currentScene = 0;
     public GameObject selectUI = default;
 
     private void Start()
@@ -115,9 +115,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         yield return new WaitForSeconds(blackDuration);
 
         currentScene = (TargetScene)SceneManager.GetActiveScene().buildIndex;
-        CloseSelectUI();
-
         MusicMgr.Instance.PlayBGM();
+
+        CloseSelectUI();
     }
 
 }
