@@ -3479,7 +3479,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 4e8c6074e1a499d46b524eb64d1e7245, type: 2}
     - {fileID: 11400000, guid: 346c5168ac8e29b44ad101e941425831, type: 2}
     - {fileID: 11400000, guid: 82e651b15dcde97409df74c3afad89f3, type: 2}
-    - {fileID: 0}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -3533,8 +3532,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls: []
 --- !u!1 &181062045
 GameObject:
   m_ObjectHideFlags: 0
