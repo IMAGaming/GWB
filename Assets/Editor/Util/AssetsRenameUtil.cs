@@ -21,7 +21,7 @@ public static class AssetsRenameUtil
         // 以对象名为键，对值排序
         System.Array.Sort(fullSelectionPaths, m_objects);
 
-        int index = 12; // 序号
+        int index = 16; // 序号
 
         foreach (Object item in m_objects)
         {

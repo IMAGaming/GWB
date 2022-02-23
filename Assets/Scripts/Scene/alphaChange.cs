@@ -14,6 +14,7 @@ public class alphaChange : MonoBehaviour
     public Animator anim_UI;
     public Animator anim_RBottle;
     //GameObject gam01;
+    public Sprite item_UI;
     
     void Start()
     {
@@ -45,7 +46,7 @@ public class alphaChange : MonoBehaviour
 
         //先换图片，然后再播放动画吧
         //Color col = new Color(1, 1, 1, 1);
-        image01.GetComponent<Image>().sprite = gam02.GetComponent<SpriteRenderer>().sprite;
+        image01.GetComponent<Image>().sprite = item_UI;
         anim_UI.SetTrigger("Start_UI");
  
         //image01.GetComponent<Image>().color = col;

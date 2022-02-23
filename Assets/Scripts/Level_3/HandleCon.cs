@@ -4,20 +4,23 @@ using UnityEngine;
 
 public class HandleCon : MonoBehaviour
 {
-
+    //把手的基类
     [SerializeField]
-    Transform handlePoint;
+    protected Transform handlePoint;
 
-    Transform basePoint;
+    protected Transform basePoint;
 
-    public bool isChoose2;
-    public bool isChoose5;
+    //public bool isChoose2;
+    //public bool isChoose5;
+
     public bool isClick;
+    public bool isCalculate;
 
     private void OnMouseDown()
     {
         basePoint = handlePoint;
         isClick = true;
+        isCalculate = true;
     }
 
     private void OnMouseDrag()
@@ -36,6 +39,11 @@ public class HandleCon : MonoBehaviour
             transform.position.z);
 
         isClick = false;
+
+        /*PuzzleCon.instance.CalculateTop();
+        PuzzleCon.instance.CalculateMid();
+        PuzzleCon.instance.CalculateBottom();*/
+
     }
 
 
@@ -44,7 +52,7 @@ public class HandleCon : MonoBehaviour
         handlePoint = collision.transform;
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    /*private void OnTriggerStay2D(Collider2D collision)
     {
         if(isClick == false)
         {
@@ -62,12 +70,16 @@ public class HandleCon : MonoBehaviour
                 
         }
         
-    }
+    }*/
 
-    private void OnTriggerExit2D(Collider2D collision)
+    protected virtual void OnTriggerExit2D(Collider2D collision)
     {
         handlePoint = basePoint;
-        isChoose2 = false;
-        isChoose5 = false;
+        for(int i = 0;i < 3; i++ )
+        {
+            PuzzleCon.instance.Solution[i] = 1;
+        }
+        //isChoose2 = false;
+        //isChoose5 = false;
     }
 }

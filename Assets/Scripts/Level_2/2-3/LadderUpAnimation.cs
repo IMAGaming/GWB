@@ -40,7 +40,7 @@ public class LadderUpAnimation : MonoBehaviour
     /// 一字阶梯
     /// </summary>
     private float[] One_Pillars = new float[8] {
-        -3.4f, -3.4f, -3.4f, -3.4f, -3.4f, -3.4f, -3.4f, -3.4f,
+        -3.7f, -3.7f, -3.7f, -3.7f, -3.7f, -3.7f, -3.7f, -3.7f,
     };
 
     public void LadderAnimation(float degree)

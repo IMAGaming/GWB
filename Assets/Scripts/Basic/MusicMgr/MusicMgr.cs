@@ -61,8 +61,8 @@ public class MusicMgr : MonoSingleton<MusicMgr>
             case TargetScene.SELECT:
                 StopBGM();
                 break;
-
             default:
+                StopBGM();
                 break;
         }
 

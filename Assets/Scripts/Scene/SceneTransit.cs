@@ -10,9 +10,9 @@ public enum TargetScene { OPEN = 0, LEVEL0 = 1, LEVEL1, LEVEL2, LEVEL3, SELECT }
 public class SceneTransit : MonoSingleton<SceneTransit>
 {
     [SerializeField] private Animator UI_Ani = default;
-    [Tooltip("黑幕时间")] [SerializeField] private float blackDuration = 0.5f;
+    [Tooltip("黑幕时间")] [SerializeField] public float blackDuration = 0.5f;
     private Transform cam;
-    public TargetScene currentScene;
+    public TargetScene currentScene = 0;
     public GameObject selectUI = default;
 
     private void Start()
@@ -74,7 +74,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         string sceneName = "";
         switch((TargetScene)scene)
         {
-            // TODO：完成对选关场景的下一关布尔值设置和关卡名设置
+            case TargetScene.OPEN:
+                sceneName = "OpenGame";
+                break;
             case TargetScene.SELECT:
                 sceneName = "Select";
                 break;            
@@ -113,9 +115,9 @@ public class SceneTransit : MonoSingleton<SceneTransit>
         yield return new WaitForSeconds(blackDuration);
 
         currentScene = (TargetScene)SceneManager.GetActiveScene().buildIndex;
-        CloseSelectUI();
-
         MusicMgr.Instance.PlayBGM();
+
+        CloseSelectUI();
     }
 
 }

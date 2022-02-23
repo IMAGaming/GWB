@@ -22,13 +22,12 @@ public class CGPlayer : MonoBehaviour
 
     private void Update()
     {
-        Debug.LogFormat("{0}/{1}", videoPlayer.frame, videoPlayer.frameCount);
+        //Debug.LogFormat("{0}/{1}", videoPlayer.frame, videoPlayer.frameCount);
         if(videoPlayer.texture != null && !isEnd)
         {
             if((long)videoPlayer.frameCount - videoPlayer.frame <= 5)
             {
-                isEnd = true;
-                SceneTransit.Instance.RealSwitchSceneCoroutine((int)TargetScene.SELECT);
+                SwitchScene();
             }
         }
     }
@@ -43,6 +42,12 @@ public class CGPlayer : MonoBehaviour
         rawImage.gameObject.SetActive(true);
         rawImage.texture = videoPlayer.texture;
         videoPlayer.Play();
+    }
+
+    public void SwitchScene()
+    {
+        isEnd = true;
+        SceneTransit.Instance.RealSwitchSceneCoroutine((int)TargetScene.SELECT);
     }
 
 

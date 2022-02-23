@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RotateImage : MonoBehaviour
@@ -27,11 +28,20 @@ public class RotateImage : MonoBehaviour
     public GameObject uiImage2;
     public GameObject uiImage3;
     public GameObject uiImage4;
+    
+    public GameObject uiLockImage2;
+    public GameObject uiLockImage3;
+    public GameObject uiLockImage4;
+
 
     public GameObject uiBG1;
     public GameObject uiBG2;
     public GameObject uiBG3;
     public GameObject uiBG4;
+    
+    public GameObject uiBGLock2;
+    public GameObject uiBGLock3;
+    public GameObject uiBGLock4;
 
     public GameObject Front;
     public GameObject Back;
@@ -47,14 +57,19 @@ public class RotateImage : MonoBehaviour
     public GameObject SwitchSceneImage2;
     public GameObject SwitchSceneImage3;
 
-    private bool isChoose = false;
+    // Fixed:重复进入关卡
+    [SerializeField] private bool isChoose = false;
 
     Vector3 standardPoint = new Vector3(0, 0, 180);
     Vector3 secondPoint = new Vector3(0, 0, 180);
 
-    private void Awake()
+    // 场景缓存
+    TargetScene loadScene = TargetScene.OPEN;
+
+    private void RotateChapter()
     {
-        switch (SceneTransit.Instance.currentScene)
+        isStop = true;
+        switch(loadScene)
         {
             case TargetScene.LEVEL0:
                 isChapter1End = true;
@@ -72,9 +87,14 @@ public class RotateImage : MonoBehaviour
 
     void Start()
     {
-        isStop = true;//在一开始的时候把isStop设为true，这样第一次点击按钮，也会换图片
+        // isStop = true;//在一开始的时候把isStop设为true，这样第一次点击按钮，也会换图片
+        isStop = false;
         repeatNumber = sceneNumber;
         uiSwitchSceneImage = SceneTransit.Instance.selectUI;
+        loadScene = SceneTransit.Instance.currentScene;
+        uiSwitchSceneImage.GetComponent<Image>().sprite = SwitchSceneImage0.GetComponent<SpriteRenderer>().sprite;
+        RotateChapter();
+        //Invoke("RotateChapter", 1.2f);
     }
 
     void Update()
@@ -82,32 +102,22 @@ public class RotateImage : MonoBehaviour
         RotatePoint();
         ButtonClick();
         ImageClick();
+        //Debug.Log(GameManager.instance.locks[0]);
+        //Debug.Log("The repeatNumber is "+ repeatNumber);
+        //if(Input.GetKeyDown(KeyCode.J))
+        //{
+        //    GameManager.instance.game1 = !GameManager.instance.game1;
+        //}
+        //if (Input.GetKeyDown(KeyCode.K))
+        //{
+        //    GameManager.instance.game2 = !GameManager.instance.game2;
+        //}
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    GameManager.instance.game3 = !GameManager.instance.game3;
+        //}
     }
 
-    //麻烦的方法，留着备用吧
-    /*void RotateToCorrect()
-    {
-        Vector3 standardPoint = new Vector3(0, -1.33f, 0);
-        Vector3 standardPointDown = new Vector3(0, -9.51f, 0);
-        Vector3 rotatePoint = new Vector3(0, Point, 0);
-
-        if (Mathf.Abs(gameObject.transform.position.y - standardPoint.y) >= 0.00005f)
-        {
-            this.transform.RotateAround(rotatePoint, Vector3.forward, Speed * Time.deltaTime);
-            //直接填一个角度，会直接瞬间转到这个角度。但这不是我们想要的，我们想要的是慢慢转到这个填入的角度。                                                        
-        }
-        else
-            this.transform.position = standardPoint;
-
-        if (Mathf.Abs(ui1.transform.position.y - standardPointDown.y) >= 0.00005f)//涉及到跟帧数有关的浮点运算在update里面不能直接判等于，因为浮点运算有误差，不一定能等于，故要改为相减的一个范围小于某个很小的数
-        {
-            ui1.transform.RotateAround(rotatePoint, Vector3.forward, Speed * Time.deltaTime);
-            
-        }
-        else
-            ui1.transform.position = standardPointDown;
-
-    }*/
 
     public void StartRotate(int Number)
     {
@@ -200,10 +210,24 @@ public class RotateImage : MonoBehaviour
                     case 2:
                         if (Image1.transform.position.y > Image2.transform.position.y)
                         {
+                            if(GameManager.instance.locks[1] == true)
                             Image2.GetComponent<SpriteRenderer>().sprite = uiImage2.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Image2.GetComponent<SpriteRenderer>().sprite = uiLockImage2.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else
-                            Image1.GetComponent<SpriteRenderer>().sprite = uiImage2.GetComponent<SpriteRenderer>().sprite;
+                        {
+                            if(GameManager.instance.locks[1] == true)
+                            {
+                                Image1.GetComponent<SpriteRenderer>().sprite = uiImage2.GetComponent<SpriteRenderer>().sprite;
+                            }
+                            else
+                                Image1.GetComponent<SpriteRenderer>().sprite = uiLockImage2.GetComponent<SpriteRenderer>().sprite;
+
+                        }
+
+                         
                         
                         Debug.Log("切换到第一关的图片");
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 3)
@@ -213,11 +237,18 @@ public class RotateImage : MonoBehaviour
 
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
+                            if(GameManager.instance.locks[1] == true)
                             Front.GetComponent<SpriteRenderer>().sprite = uiBG2.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Front.GetComponent<SpriteRenderer>().sprite = uiBGLock2.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else if (Back.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
-                            Back.GetComponent<SpriteRenderer>().sprite = uiBG2.GetComponent<SpriteRenderer>().sprite;
+                            if (GameManager.instance.locks[1] == true)
+                                Back.GetComponent<SpriteRenderer>().sprite = uiBG2.GetComponent<SpriteRenderer>().sprite;
+                            else
+                                Back.GetComponent<SpriteRenderer>().sprite = uiBGLock2.GetComponent<SpriteRenderer>().sprite;
                         }
 
                         uiSwitchSceneImage.GetComponent<Image>().sprite = SwitchSceneImage1.GetComponent<SpriteRenderer>().sprite;
@@ -225,10 +256,21 @@ public class RotateImage : MonoBehaviour
                     case 3:
                         if (Image1.transform.position.y > Image2.transform.position.y)
                         {
+                            if(GameManager.instance.locks[2] == true)
                             Image2.GetComponent<SpriteRenderer>().sprite = uiImage3.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Image2.GetComponent<SpriteRenderer>().sprite = uiLockImage3.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else
+                        {
+                            if(GameManager.instance.locks[2] == true)
                             Image1.GetComponent<SpriteRenderer>().sprite = uiImage3.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Image1.GetComponent<SpriteRenderer>().sprite = uiLockImage3.GetComponent<SpriteRenderer>().sprite;
+
+                        }
+                            
 
                         Debug.Log("切换到第二关的图片");
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 3)
@@ -238,11 +280,19 @@ public class RotateImage : MonoBehaviour
 
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
+                            if(GameManager.instance.locks[2] == true)
                             Front.GetComponent<SpriteRenderer>().sprite = uiBG3.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Front.GetComponent<SpriteRenderer>().sprite = uiBGLock3.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else if (Back.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
+                            if(GameManager.instance.locks[2] == true)
                             Back.GetComponent<SpriteRenderer>().sprite = uiBG3.GetComponent<SpriteRenderer>().sprite;
+                            else
+                            Back.GetComponent<SpriteRenderer>().sprite = uiBGLock3.GetComponent<SpriteRenderer>().sprite;
+
                         }
 
                         uiSwitchSceneImage.GetComponent<Image>().sprite = SwitchSceneImage2.GetComponent<SpriteRenderer>().sprite;
@@ -250,10 +300,20 @@ public class RotateImage : MonoBehaviour
                     case 4:
                         if (Image1.transform.position.y > Image2.transform.position.y)
                         {
+                            if(GameManager.instance.locks[3] == true)
                             Image2.GetComponent<SpriteRenderer>().sprite = uiImage4.GetComponent<SpriteRenderer>().sprite;
+                            else
+                                Image2.GetComponent<SpriteRenderer>().sprite = uiLockImage4.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else
-                            Image1.GetComponent<SpriteRenderer>().sprite = uiImage4.GetComponent<SpriteRenderer>().sprite;
+                        {
+                            if(GameManager.instance.locks[3] == true)
+                                Image1.GetComponent<SpriteRenderer>().sprite = uiImage4.GetComponent<SpriteRenderer>().sprite;
+                            else
+                                Image1.GetComponent<SpriteRenderer>().sprite = uiLockImage4.GetComponent<SpriteRenderer>().sprite;
+                        }
+                            
 
                         Debug.Log("切换到第三关的图片");
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 3)
@@ -263,11 +323,19 @@ public class RotateImage : MonoBehaviour
 
                         if (Front.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
+                            if(GameManager.instance.locks[3] == true)
                             Front.GetComponent<SpriteRenderer>().sprite = uiBG4.GetComponent<SpriteRenderer>().sprite;
+                            else
+                                Front.GetComponent<SpriteRenderer>().sprite = uiBGLock4.GetComponent<SpriteRenderer>().sprite;
+
                         }
                         else if (Back.GetComponent<SpriteRenderer>().sortingOrder == 2)
                         {
+                            if(GameManager.instance.locks[3] == true)
                             Back.GetComponent<SpriteRenderer>().sprite = uiBG4.GetComponent<SpriteRenderer>().sprite;
+                            else
+                                Back.GetComponent<SpriteRenderer>().sprite = uiBGLock4.GetComponent<SpriteRenderer>().sprite;
+
                         }
 
                         uiSwitchSceneImage.GetComponent<Image>().sprite = SwitchSceneImage3.GetComponent<SpriteRenderer>().sprite;
@@ -291,9 +359,9 @@ public class RotateImage : MonoBehaviour
 
     public void ImageClick()
     {
-        if(isStop == true && !isChoose)
+        if(isStop == true && !isChoose) //&& SceneTransit.Instance.isRaycast == true
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
@@ -302,7 +370,7 @@ public class RotateImage : MonoBehaviour
 
                 if (hitInfo.collider?.gameObject.tag != null)
                 {
-                    if (hitInfo.collider.gameObject.tag == "关卡图")
+                    if (hitInfo.collider.gameObject.tag == "关卡图" && isRaycast())
                     {
 	                    MusicMgr.Instance.PlaySound(MusicMgr.Instance.clickMusic, false);
                         SceneTransit.Instance.OpenSelectUI();
@@ -314,4 +382,20 @@ public class RotateImage : MonoBehaviour
         }
        
     }
+
+    public bool isRaycast()
+    {
+        switch(repeatNumber)
+        {
+            case 2:
+                return GameManager.instance.locks[1];
+            case 3:
+                return GameManager.instance.locks[2];
+            case 4:
+                return GameManager.instance.locks[3];
+        }
+        return true;
+    }
+
+
 }
